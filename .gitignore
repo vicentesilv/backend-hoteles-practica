@@ -1,0 +1,71 @@
+# Dependencias
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+
+# Compilados
+/dist
+/build
+*.js.map
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+/coverage
+/.nyc_output
+*.lcov
+
+# IDEs y editores
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# # Variables de entorno
+# .env
+# .env.local
+# .env.development.local
+# .env.test.local
+# .env.production.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Temp
+*.tmp
+*.temp
+.cache
+
+# Docker
+docker-compose.override.yml
+
+# Misc
+.eslintcache
+.cache
+*.seed
+*.pid
+*.pid.lock
+.npm
