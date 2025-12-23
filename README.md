@@ -115,6 +115,9 @@ esto construira las imagenes necesarias y levantara los contenedores definidos e
 
 igual a continuacion dejo una serie de comandos que se pueden usar y el para que de cada comando:
 
+- Veroficar que estan corriendo los contenedores
+```docker-compose ps```
+
 - Desarrollo con hot-reload
  ```docker-compose up```
 
