@@ -9,6 +9,7 @@ nota: cuando clonen el repositorio recuerden ejecutar npm install para instalar 
 - [dockerizacion del proyecto](#dockerizacion-del-proyecto)
 - [base de datos mysql](#base-de-datos-mysql) ]
 - [configuracion de gitignore](#configuracion-de-gitignore)
+- [primer reporte de ejecucion](#primer-reporte-de-ejecucion)
 
 ## configuracion de dependencias
 
@@ -233,3 +234,11 @@ docker-compose.override.yml
 *.pid.lock
 .npm
 ```
+
+## primer reporte de ejecucion
+
+al ejecutar el comando ```docker-compose up --build``` se levantaron los contenedores de la aplicacion y la base de datos mysql sin ningun problema.
+la aplicacion de backend esta corriendo en el puerto 3001 y la base de datos mysql en el puerto 3308 estos puertos son los que usaran nuestras maquinas locales para conectarse a los servicios corriendo en los contenedores de docker
+he parado el servicio con el comando ```docker-compose down``` sin ningun problema.
+y lo he vuelto a levantar con el comando ```docker-compose up -d``` en modo detached (segundo plano) sin ningun problema.ademas he verificado que los contenedores estan corriendo correctamente con el comando ```docker-compose ps``` y todo esta funcionando como se esperaba sin ningun inconveniente.ademas he verificado los logs de los contenedores con el comando ```docker-compose logs -f``` y no se reportaron errores ni advertencias.ademas verifique la conexion de la base de datos con dbgate e hice una consulta al servidor nest con curl y todo funciono correctamente.
+![prueba curl y docker ps](imgs_reports/1.png)
