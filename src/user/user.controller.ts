@@ -3,13 +3,13 @@ import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-    // UserController logica de negocio aqui
+    // UserController logica de conexion la logica de negocio se maneja en el servicio
     constructor(private readonly userService: UserService) {}
 
     // Metodos del controlador aqui
-    @Get()
-    getUser() {
-        return "prueba exito";
-    }
+    // @Get('test')
+    // getejemplo() {
+    //     return "prueba exito";
+    // }
 
 }
