@@ -9,3 +9,12 @@
 - auth
     - register user -> Mario Astorga
     - login con jwt -> vicente silva
+    - correo de verificacion -> Vicente Silva
+    - resetear contraseña -> vicente silva
+    - recuperar contraseña -> vicente silva
+
+- users
+    - verusuario -> alberto brodden
+    - editar usuario -> alberto brodden
+    - eliminar usuario -> alberto brodden
+

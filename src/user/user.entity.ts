@@ -51,6 +51,8 @@
  * @param contrasena - Contraseña del usuario.
  * @param fecha_nacimiento - Fecha de nacimiento del usuario.
  * @param rol - Rol del usuario, puede ser 'cliente' o 'hotelero'.
+ * @param jwtVerificationToken - Token de verificación JWT para el usuario.
+ * @param isVerified - Indica si el usuario ha verificado su cuenta.
  * @param fecha_registro - Fecha y hora en que el usuario se registró en el sistema.
 
  */

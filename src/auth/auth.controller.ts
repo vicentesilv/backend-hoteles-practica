@@ -17,6 +17,20 @@ export class AuthController {
      *  - usa el servicio AuthService para la logica de negocio mediante inyeccion de dependencias eje,mplo:
      *     constructor(private readonly authService: AuthService) {}
      * }
+     * @member vicente silva
+     * @subtask {
+     * antes del registro mandar un correo de verificacion al usuario
+     * - usar un servicio de correo como nodemailer o sendgrid
+     *  - enviar un enlace de verificacion al correo del usuario {
+     *    - el enlace debe contener los datos registrados para que al hacer click en confirmar usuario
+     *   se registr el usuario en la base de datos
+     *   - el enlace debe tener un token de verificacion unico para evitar ataques de phishing
+     *    - el enlace debe tener una fecha de expiracion para evitar que se use despues de un tiempo
+     *  }
+     *  - manejar errores comunes como correo invalido, error al enviar correo, etc.
+     *  - usa el servicio AuthService para la logica de negocio mediante inyeccion de dependencias eje,mplo:
+     *     constructor(private readonly authService: AuthService) {}
+     * }
      * 
      * ejemplo de la definicion del endpoint:
         @Get('test')
@@ -55,6 +69,18 @@ export class AuthController {
             return "prueba exito";
         }
      * 
+     */
+
+     /**
+     * @member vicente silva
+     * @description resetear la contrasena de un usuario y enviar un correo de recuperacion
+     * 
+     * @task {
+     *  - crear el endpoint forgot-password para enviar un correo de recuperacion
+     *  - crear el endpoint reset-password para resetear la contrasena de un usuario
+     *  - usar DTOs para validar la entrada de datos {email}
+     *  - todas estas tareas deben ser terminada cuando se empiece el frontend del proyecto
+     *       
      */
 
 

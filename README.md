@@ -10,6 +10,7 @@ nota: cuando clonen el repositorio recuerden ejecutar npm install para instalar 
 - [base de datos mysql](#base-de-datos-mysql) ]
 - [configuracion de gitignore](#configuracion-de-gitignore)
 - [primer reporte de ejecucion](#primer-reporte-de-ejecucion)
+- [lista de tareas por hacer](tareas_README.md)
 
 ## configuracion de dependencias
 
