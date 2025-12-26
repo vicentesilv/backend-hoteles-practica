@@ -19,7 +19,7 @@ export class UserController {
      * @task {
      *  - crear el endpoint getUser para obtener los datos de un usuario
      *  - crear el endpoint updateUser para actualizar los datos de un usuario {contraseña,email} los demas no se pueden actualizar
-     * - crear el endpoint deleteUser para eliminar un usuario
+     *  - crear el endpoint deleteUser para eliminar un usuario
      *  - usar DTOs para validar la entrada de datos {id,email, contrasena} segun corresponda
      *  - manejar la logica con la conexion a la base de datos usando TypeORM en el user.service.ts
      *  - retornar un mensaje de exito o error segun corresponda
