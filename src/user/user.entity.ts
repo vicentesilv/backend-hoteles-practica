@@ -1,3 +1,10 @@
+import { Entity, PrimaryGeneratedColumn } from "typeorm";
+
+@Entity()
+export class User{
+    @PrimaryGeneratedColumn()
+    id: number;
+}
 /**aqui les dejo un ejemplo de como manejar las entidades en NestJS usando TypeORM
  * import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
  * import { Reserva } from '../hoteles/reserva.entity';

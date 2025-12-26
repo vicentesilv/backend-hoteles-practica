@@ -21,7 +21,7 @@ import { ormConfig } from './config/ormconfig';
     TypeOrmModule.forRoot(ormConfig),
     AuthModule,
     UserModule,
-    HotelesModule],
+    HotelesModule,],
   controllers: [UserController, HotelesController,AuthController],
   providers: [HotelesService,UserService,AuthService],
 

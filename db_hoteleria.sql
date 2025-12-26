@@ -1,3 +1,4 @@
+/* deprecated */
 CREATE DATABASE db_hoteleria;
 USE db_hoteleria;
 
