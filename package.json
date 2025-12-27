@@ -33,6 +33,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
     "bcrypt": "^6.0.0",
+    "class-validator": "^0.14.3",
     "dotenv": "^17.2.3",
     "mysql2": "^3.16.0",
     "passport": "^0.7.0",
