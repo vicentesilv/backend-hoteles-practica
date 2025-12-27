@@ -1,8 +1,32 @@
-import { Controller } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+  Get,
+} from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
+
 
 @Controller('auth')
 export class AuthController {
-    /**
+  constructor(private readonly authService: AuthService) {}
+
+  //   @Post('register')
+  //   @HttpCode(HttpStatus.CREATED)
+  //   async register(@Body() registerDto: RegisterDto) {
+  //     const user = await this.authService.register(registerDto);
+  //     const { contrasena, jwtVerificationToken, ...result } = user;
+  //     return {
+  //       message: 'Usuario registrado exitosamente. Por favor verifica tu correo electrónico.',
+  //       user: result,
+  //     };
+  //   }
+
+  /**
      * @member mario astorga
      * @description Controlador de registro basico para la aplicacion
      * usa el metodo @Post de @nestjs/common para la creacion del endpoint de registro
@@ -40,14 +64,7 @@ export class AuthController {
      * 
      */
 
-
-
-
-
-
-
-
-     /**
+  /**
      * @member vicente silva
      * @description Controlador de inicio de sesion basico para la aplicacion
      * usa el metodo @Post de @nestjs/common para la creacion del endpoint de registro
@@ -71,20 +88,21 @@ export class AuthController {
      * 
      */
 
-     /**
-     * @member vicente silva
-     * @description resetear la contrasena de un usuario y enviar un correo de recuperacion
-     * 
-     * @task {
-     *  - crear el endpoint forgot-password para enviar un correo de recuperacion
-     *  - crear el endpoint reset-password para resetear la contrasena de un usuario
-     *  - usar DTOs para validar la entrada de datos {email}
-     *  - todas estas tareas deben ser terminada cuando se empiece el frontend del proyecto
-     *       
-     */
+  @Post('inicio-sesion')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto.email, loginDto.contrasena);
+  }
 
-
-
+  /**
+   * @member vicente silva
+   * @description resetear la contrasena de un usuario y enviar un correo de recuperacion
+   *
+   * @task {
+   *  - crear el endpoint forgot-password para enviar un correo de recuperacion
+   *  - crear el endpoint reset-password para resetear la contrasena de un usuario
+   *  - usar DTOs para validar la entrada de datos {email}
+   *  - todas estas tareas deben ser terminada cuando se empiece el frontend del proyecto
+   *
+   */
 }
-
-
