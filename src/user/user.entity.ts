@@ -21,8 +21,8 @@ export class User{
     @Column({ type: 'date'})
     fecha_nacimiento: Date;
 
-    @Column({ type: 'varchar', enum: UserRol, default: UserRol.CLIENTE, nullable: false })
-    rol: string;
+    @Column({ type: 'enum', enum: UserRol, default: UserRol.CLIENTE, nullable: false })
+    rol: UserRol;
 
     @Column({ type: 'varchar', length: 512, select: false})
     jwtVerificationToken: string;
