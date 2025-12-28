@@ -1,10 +1,30 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Put, Param, Body, ParseIntPipe, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
+import { User } from './user.entity'; 
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
     // UserController logica de conexion la logica de negocio se maneja en el servicio
-    // constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService) {}
+
+    @Get(':id')
+    async getUser(@Param('id') id: number): Promise<User> {
+        const User = await this.userService.findOneById(id);
+        if (!User) throw new NotFoundException('Usuario no encontrado');
+        return User;
+    }
+
+    @Put(':id')
+    @UsePipes(new ValidationPipe({ whitelist: true }))
+    async updateUser(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() dto: UpdateUserDto,
+    ): Promise<User> {
+        const updated = await this.userService.updateUser(id, dto.email, dto.contrasena);
+        if (!updated) throw new NotFoundException('Usuario no encontrado');
+        return updated;
+  }
     // Metodos del controlador aqui
     // @Get('test')
     // getejemplo() {
