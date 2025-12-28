@@ -1,3 +1,29 @@
+import { User } from "src/user/user.entity";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Habitacion } from "./habitaciones.entity";
+
+@Entity()
+export class Reserva{
+    @PrimaryGeneratedColumn()
+    id : number;
+
+    @ManyToOne(()=>User, (user)=>user.id,{
+        cascade: true,
+    })
+    idUsuario :  number;
+
+    @OneToOne(()=>Habitacion, (habitacion)=>habitacion.id,{
+        cascade:true
+    })
+    idHabitacion: number;
+
+    @Column({type: 'date'})
+    fechaInicio : Date;
+
+    @Column({type: 'date'})
+    fechaFin : Date;
+
+}
 /**aqui les dejo un ejemplo de como manejar las entidades en NestJS usando TypeORM
  * import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
  * import { Reserva } from '../hoteles/reserva.entity';
