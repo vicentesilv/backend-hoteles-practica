@@ -1,7 +1,20 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { RegisterDTO } from './dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
+    
+    constructor(
+        private readonly authService: AuthService,
+    ){}
+    @Post('register')
+    async register(
+        @Body()
+        registerDTO:RegisterDTO
+    ){
+        return await this.authService.register(registerDTO)
+    }
     /**
      * @member mario astorga
      * @description Controlador de registro basico para la aplicacion
