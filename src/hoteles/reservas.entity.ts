@@ -12,8 +12,8 @@ export class Reserva{
     })
     idUsuario :  number;
 
-    @OneToOne(()=>Habitacion, (habitacion)=>habitacion.id,{
-        cascade:true
+    @ManyToOne(()=>Habitacion, (habitacion)=>habitacion.id,{
+        cascade:true,
     })
     idHabitacion: number;
 
