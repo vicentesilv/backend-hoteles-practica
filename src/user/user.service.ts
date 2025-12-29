@@ -30,4 +30,9 @@ export class UserService {
         if (!updated) throw new NotFoundException('Usuario no encontrado');
     return updated;
     }
+
+    async deleteUser(id: number): Promise<boolean> {
+    const res = await this.userRepo.delete({ id });
+    return !!res.affected;
+  }
 }

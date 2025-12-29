@@ -1,4 +1,9 @@
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, IsNumber } from 'class-validator';
+
+export class getUserDto {
+  @IsNumber()
+  id: number;
+}
 
 export class UpdateUserDto {
   @IsEmail()
