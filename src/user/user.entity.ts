@@ -14,7 +14,7 @@ export class User{
 
     @Column({ type: 'varchar', length: 255, unique: true })
     email: string;
-
+    
     @Column({ type: 'varchar', length: 255, nullable: false, select: false })
     contrasena: string;
 
@@ -24,7 +24,7 @@ export class User{
     @Column({ type: 'enum', enum: UserRol, default: UserRol.CLIENTE, nullable: false })
     rol: UserRol;
 
-    @Column({ type: 'varchar', length: 512, select: false})
+    @Column({ type: 'varchar', length: 512, select: false, default:null})
     jwtVerificationToken: string;
 
     @Column({ type: 'boolean', default: false})
