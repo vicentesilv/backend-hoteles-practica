@@ -26,15 +26,9 @@ export class AuthService {
         if (!user) throw new UnauthorizedException('Credenciales inválidas');
         const isPasswordValid = await bcrypt.compare(contrasena, user.contrasena);
         if (!isPasswordValid) throw new UnauthorizedException('Credenciales inválidas');
-        
         if (!user.isVerified) throw new UnauthorizedException('Usuario no verificado. Por favor verifica tu correo electrónico');
         
-        const payload = { 
-            sub: user.id, 
-            email: user.email, 
-            rol: user.rol,
-            nombre: user.nombre 
-        };
+        const payload = { sub: user.id, email: user.email, rol: user.rol,nombre: user.nombre };
         const { contrasena: _, ...userWithoutPassword } = user;
 
         return {
