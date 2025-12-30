@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
 
 export enum UserRol {
   CLIENTE = 'cliente',
@@ -24,13 +24,13 @@ export class User{
     @Column({ type: 'enum', enum: UserRol, default: UserRol.CLIENTE, nullable: false })
     rol: UserRol;
 
-    @Column({ type: 'varchar', length: 512, select: false})
+    @Column({ type: 'varchar', length: 512, nullable: true, select: false})
     jwtVerificationToken: string;
 
     @Column({ type: 'boolean', default: false})
-    isVerified: boolean;
+    isVerified: boolean | null;
 
-    @Column({ type: 'timestamp'})
+    @CreateDateColumn({ type: 'timestamp' })
     fecha_registro: Date;
 
 }

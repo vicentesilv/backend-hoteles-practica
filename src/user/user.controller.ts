@@ -1,8 +1,9 @@
-import { Controller, Get, Put, Delete, Param, Body, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller,Post, Get, Put, Delete, Param, Body, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity'; 
 import { UpdateUserDto, getUserDto } from './dto/update-user.dto';
 import { IdParamDto } from './dto/id-param.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -57,6 +58,12 @@ export class UserController {
     const deleted = await this.userService.deleteUser(params.id);
     if (!deleted) throw new NotFoundException('Usuario no encontrado');
     return { message: 'Usuario eliminado' };
+  }
+
+  @Post()
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async createUser(@Body() dto: CreateUserDto): Promise<User> {
+    return this.userService.createUser(dto);
   }
     // Metodos del controlador aqui
     // @Get('test')
