@@ -4,35 +4,35 @@ import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import * as nodemailer from 'nodemailer';
+import { confignodeemail } from 'src/config/nodeemail';
 
 @Injectable()
 export class AuthService {
-    private transporter: nodemailer.Transporter;
+    private emailService: confignodeemail;
 
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
         private jwtService: JwtService
     ) {
-        // Configurar el transportador de nodemailer
-        this.transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.mail,
-                pass: process.env.mailPass,
-            },
-        });
+        // Inicializar el servicio de correo
+        this.emailService = new confignodeemail();
     }
 
+    /**
+     * @member vicente silva
+     * @description Verifica si un usuario existe por su email 
+     * @param email - Email del usuario a verificar
+     * @returns El usuario si existe, null si no existe
+     */
     async verifyUser(email: string): Promise<User | null> {
         return this.usersRepository.findOne({ 
             where: { email },
-            select: ['id', 'email', 'nombre', 'contrasena', 'rol', 'isVerified']
+            select: ['id', 'email', 'nombre', 'contrasena', 'rol', 'isVerified'] 
         });
     }
 
-    async login(email: string, contrasena: string): Promise<{ access_token: string; user: any }> {
+    async login(email: string, contrasena: string): Promise<{ access_token: string;  }> {
         const user = await this.verifyUser(email);
         
         if (!user) throw new UnauthorizedException('Credenciales inválidas');
@@ -40,12 +40,11 @@ export class AuthService {
         if (!isPasswordValid) throw new UnauthorizedException('Credenciales inválidas');
         if (!user.isVerified) throw new UnauthorizedException('Usuario no verificado. Por favor verifica tu correo electrónico');
         
-        const payload = { sub: user.id, email: user.email, rol: user.rol,nombre: user.nombre };
-        const { contrasena: _, ...userWithoutPassword } = user;
-
+        const payload = { sub: user.id, email: user.email, rol: user.rol,nombre: user.nombre }; 
+        // const { contrasena: _, ...userWithoutPassword } = user;
         return {
             access_token: this.jwtService.sign(payload),
-            user: userWithoutPassword,
+            // user: userWithoutPassword,
         };
     }
 
@@ -55,22 +54,18 @@ export class AuthService {
             select: ['id', 'email', 'nombre', 'resetPasswordToken', 'resetPasswordExpires']
         });
         
-        if (!user) {
-            // No revelamos si el usuario existe o no por seguridad
-            return;
-        }
-
-        // Generar token JWT para recuperación de contraseña
+        if (!user) return;
+        
         const payload = { 
             sub: user.id, 
             email: user.email,
             type: 'password-reset'
         };
-        const resetToken = this.jwtService.sign(payload, { expiresIn: '1h' });
+        const resetToken = this.jwtService.sign(payload, { expiresIn: '15m' });
 
         // Guardar el token y su fecha de expiración en la base de datos
         const expiresAt = new Date();
-        expiresAt.setHours(expiresAt.getHours() + 1);
+        expiresAt.setMinutes(expiresAt.getMinutes() + 15); // Expira en 15 minutos
         
         user.resetPasswordToken = resetToken;
         user.resetPasswordExpires = expiresAt;
@@ -107,7 +102,7 @@ export class AuthService {
         };
 
         try {
-            await this.transporter.sendMail(mailOptions);
+            await this.emailService.sendMail(mailOptions);
         } catch (error) {
             console.error('Error al enviar el correo:', error);
             throw new BadRequestException('Error al enviar el correo de recuperación');
@@ -115,7 +110,6 @@ export class AuthService {
     }
 
     async resetPassword(token: string, nuevaContrasena: string): Promise<void> {
-        // Verificar que el token JWT sea válido
         let decoded;
         try {
             decoded = this.jwtService.verify(token);
@@ -123,36 +117,20 @@ export class AuthService {
             throw new UnauthorizedException('Token inválido o expirado');
         }
 
-        // Verificar que sea un token de recuperación de contraseña
-        if (decoded.type !== 'password-reset') {
-            throw new UnauthorizedException('Token no válido para esta operación');
-        }
-
-        // Buscar el usuario y verificar que el token coincida con el de la BD
+        if (decoded.type !== 'password-reset') throw new UnauthorizedException('Token no válido para esta operación');
+        
         const user = await this.usersRepository.findOne({ 
-            where: { id: decoded.sub },
+            where: { id: decoded.sub }, 
             select: ['id', 'email', 'contrasena', 'resetPasswordToken', 'resetPasswordExpires']
         });
 
-        if (!user) {
-            throw new UnauthorizedException('Usuario no encontrado');
-        }
+        if (!user) throw new UnauthorizedException('Usuario no encontrado');
+        if (user.resetPasswordToken !== token) throw new UnauthorizedException('Token no coincide con el registrado');
+        if (!user.resetPasswordExpires || new Date() > user.resetPasswordExpires) throw new UnauthorizedException('El token ha expirado');
+        
 
-        // Verificar que el token coincida con el guardado en la BD
-        if (user.resetPasswordToken !== token) {
-            throw new UnauthorizedException('Token no coincide con el registrado');
-        }
-
-        // Verificar que el token no haya expirado
-        if (!user.resetPasswordExpires || new Date() > user.resetPasswordExpires) {
-            throw new UnauthorizedException('El token ha expirado');
-        }
-
-        // Hash de la nueva contraseña
-        const hashedPassword = await bcrypt.hash(nuevaContrasena, 10);
-
-        // Actualizar la contraseña y limpiar los campos de recuperación
-        user.contrasena = hashedPassword;
+        // const hashedPassword = await bcrypt.hash(nuevaContrasena, 10);
+        user.contrasena = await bcrypt.hash(nuevaContrasena, 10);
         user.resetPasswordToken = null;
         user.resetPasswordExpires = null;
         

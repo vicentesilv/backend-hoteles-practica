@@ -66,40 +66,26 @@ export class AuthController {
      * 
      */
 
-  /**
-     * @member vicente silva
-     * @description Controlador de inicio de sesion basico para la aplicacion
-     * usa el metodo @Post de @nestjs/common para la creacion del endpoint de registro
-     * 
-     * @task {
-     *  - crear el endpoint login para iniciar sesion de usuarios
-     *  - usar DTOs para validar la entrada de datos {email, contrasena}
-     *  - manejar la logica con la conexion a la base de datos usando TypeORM en el auth.service.ts
-     *  - retornar un mensaje de exito o error segun corresponda
-     *  - comprobar las contrasenas usando bcrypt antes de compararlas en la base de datos
-     *  - manejar errores comunes como usuario no existente, contrasena incorrecta, etc.
-     *  - usa el servicio AuthService para la logica de negocio mediante inyeccion de dependencias eje,mplo:
-     *     constructor(private readonly authService: AuthService) {}
-     * }
-     * 
-     * ejemplo de la definicion del endpoint:
-        @Get('test')
-        getEjemplo() {
-            return "prueba exito";
-        }
-     * 
-     */
 
+  /** 
+   * @member vicente silva 
+   * @endpoint inicio-sesion
+   * @description Inicia sesión de un usuario con email y contraseña
+   * @param loginDto - DTO con el email y la contraseña del usuario
+   * @return Token JWT si las credenciales son válidas | error si no lo son
+  */ 
   @Post('inicio-sesion')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.OK) 
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto.email, loginDto.contrasena);
   }
 
-  /**
+  /** 
+   * @member vicente silva 
    * @endpoint forgot-password
    * @description Solicita recuperación de contraseña enviando un email con un JWT
    * @param forgotPasswordDto - DTO con el email del usuario
+   * @return Mensaje indicando que se ha enviado el email si el usuario existe
    */
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
@@ -111,9 +97,11 @@ export class AuthController {
   }
   
   /**
+   * @member vicente silva
    * @endpoint reset-password
    * @description Resetea la contraseña verificando el JWT del email y comparándolo con la BD
    * @param resetPasswordDto - DTO con el token y la nueva contraseña
+   * @return Mensaje indicando que la contraseña ha sido restablecida exitosamente ademas de actualizar la BD
    */
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
@@ -126,16 +114,4 @@ export class AuthController {
       message: 'Contraseña restablecida exitosamente',
     };
   }
-
-  /**
-   * @member vicente silva
-   * @description resetear la contrasena de un usuario y enviar un correo de recuperacion
-   *
-   * @task {
-   *  - crear el endpoint forgot-password para enviar un correo de recuperacion
-   *  - crear el endpoint reset-password para resetear la contrasena de un usuario
-   *  - usar DTOs para validar la entrada de datos {email}
-   *  - todas estas tareas deben ser terminada cuando se empiece el frontend del proyecto
-   *
-   */
 }
