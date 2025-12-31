@@ -33,6 +33,12 @@ export class User{
     @Column({ type: 'timestamp'})
     fecha_registro: Date;
 
+    @Column({ type: 'varchar', length: 512, nullable: true, select: false })
+    resetPasswordToken: string | null;
+
+    @Column({ type: 'timestamp', nullable: true, select: false })
+    resetPasswordExpires: Date | null;
+
 }
 /**aqui les dejo un ejemplo de como manejar las entidades en NestJS usando TypeORM
  * import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';

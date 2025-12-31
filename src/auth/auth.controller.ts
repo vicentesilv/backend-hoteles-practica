@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 
 @Controller('auth')
@@ -92,6 +94,37 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto.email, loginDto.contrasena);
+  }
+
+  /**
+   * @endpoint forgot-password
+   * @description Solicita recuperación de contraseña enviando un email con un JWT
+   * @param forgotPasswordDto - DTO con el email del usuario
+   */
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    await this.authService.forgotPassword(forgotPasswordDto.email);
+    return {
+      message: 'Si el correo está registrado, se ha enviado un enlace de recuperación de contraseña.',
+    };
+  }
+  
+  /**
+   * @endpoint reset-password
+   * @description Resetea la contraseña verificando el JWT del email y comparándolo con la BD
+   * @param resetPasswordDto - DTO con el token y la nueva contraseña
+   */
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    await this.authService.resetPassword(
+      resetPasswordDto.token,
+      resetPasswordDto.nuevaContrasena
+    );
+    return {
+      message: 'Contraseña restablecida exitosamente',
+    };
   }
 
   /**
