@@ -138,17 +138,21 @@ export class AuthService {
         await this.usersRepository.save(user);
     }
     
-    async register(registerDto:RegisterDto):Promise<User>{
-        const user=await this.verifyUser(registerDto.email)
-        if(user){
+    async register(registerDto: RegisterDto):Promise<{nombre: String, email: String}>{
+        const user = await this.verifyUser(registerDto.email)
+        if (user) {
             throw new BadRequestException('Usuario existente')
         }
-        const hashedPassword=await bcrypt.hash(registerDto.contrasena,SALT)
+        const hashedPassword = await bcrypt.hash(registerDto.contrasena,SALT)
         const newUser={
             ...registerDto,
             contrasena:hashedPassword
         }
-        return await this.usersRepository.save(newUser)
+        const savedUser = await this.usersRepository.save(newUser)
+        return{
+            nombre: savedUser.nombre,
+            email: savedUser.email
+        }
     }
   
 }

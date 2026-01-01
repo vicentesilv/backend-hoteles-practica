@@ -1,4 +1,4 @@
-import { IsDate, IsDateString, IsEmail, IsNotEmpty, IsString } from "class-validator";
+import {IsDateString, IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 
 export class RegisterDto{
     @IsString()
@@ -10,8 +10,11 @@ export class RegisterDto{
     email: string;
 
     @IsString()
+    @IsNotEmpty({message:'La contraseña es un campo obligatorio'})
+    @MinLength(8)
     contrasena: string;
 
-    @IsDateString()
+    @IsNotEmpty({message:'La fecha de nacimiento es un campo obligatorio'})
+    @IsDateString({},{message:'La fecha de nacimiento debe estar un formato compatible'})
     fecha_nacimiento: Date;
 }

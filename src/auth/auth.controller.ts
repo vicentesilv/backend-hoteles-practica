@@ -122,6 +122,6 @@ export class AuthController {
     await this.authService.register(registerDto);
     return{
       message:'Usuario registrado'
-    };
+     };
   }
 }
