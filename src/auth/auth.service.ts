@@ -5,11 +5,12 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { confignodeemail } from 'src/config/nodeemail';
-
+import { RegisterDto } from './dto/register.dto';
+const SALT=10;
 @Injectable()
 export class AuthService {
     private emailService: confignodeemail;
-
+    
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
@@ -130,13 +131,25 @@ export class AuthService {
         
 
         // const hashedPassword = await bcrypt.hash(nuevaContrasena, 10);
-        user.contrasena = await bcrypt.hash(nuevaContrasena, 10);
+        user.contrasena = await bcrypt.hash(nuevaContrasena, SALT);
         user.resetPasswordToken = null;
         user.resetPasswordExpires = null;
         
         await this.usersRepository.save(user);
     }
-
+    
+    async register(registerDto:RegisterDto):Promise<User>{
+        const user=await this.verifyUser(registerDto.email)
+        if(user){
+            throw new BadRequestException('Usuario existente')
+        }
+        const hashedPassword=await bcrypt.hash(registerDto.contrasena,SALT)
+        const newUser={
+            ...registerDto,
+            contrasena:hashedPassword
+        }
+        return await this.usersRepository.save(newUser)
+    }
   
 }
 
