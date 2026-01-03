@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { RegisterDto } from './dto/register.dto';
 
 
 @Controller('auth')
@@ -113,5 +114,14 @@ export class AuthController {
     return {
       message: 'Contraseña restablecida exitosamente',
     };
+  }
+
+  @Post('registrarse')
+  @HttpCode(HttpStatus.CREATED)
+  async register(@Body() registerDto:RegisterDto){
+    await this.authService.register(registerDto);
+    return{
+      message:'Usuario registrado'
+     };
   }
 }
