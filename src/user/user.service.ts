@@ -3,6 +3,7 @@ import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -23,7 +24,7 @@ export class UserService {
     async updateUser(id: number, email: string, contrasena: string): Promise<User> {
         const exists = await this.userRepo.exist({ where: { id } });
         if (!exists) throw new NotFoundException('Usuario no encontrado');
-
+        contrasena = bcrypt.hashSync(contrasena, 10);
         const res = await this.userRepo.update({ id }, { email, contrasena });
         if (!res.affected) throw new NotFoundException('Sin cambios');
 
