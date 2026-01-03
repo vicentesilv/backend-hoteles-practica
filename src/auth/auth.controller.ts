@@ -12,61 +12,12 @@ import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RegisterDto } from './dto/register.dto';
+import { ConfirmRegisterDto } from './dto/confirm-register.dto';
 
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  //   @Post('register')
-  //   @HttpCode(HttpStatus.CREATED)
-  //   async register(@Body() registerDto: RegisterDto) {
-  //     const user = await this.authService.register(registerDto);
-  //     const { contrasena, jwtVerificationToken, ...result } = user;
-  //     return {
-  //       message: 'Usuario registrado exitosamente. Por favor verifica tu correo electrónico.',
-  //       user: result,
-  //     };
-  //   }
-
-  /**
-     * @member mario astorga
-     * @description Controlador de registro basico para la aplicacion
-     * usa el metodo @Post de @nestjs/common para la creacion del endpoint de registro
-     * 
-     * @task {
-     *  - crear el endpoint register para registrar nuevos usuarios
-     *  - usar DTOs para validar la entrada de datos {todos los campos del entity user}
-     *  - manejar la logica con la conexion a la base de datos usando TypeORM en el auth.service.ts
-     *  - retornar un mensaje de exito o error segun corresponda
-     *  - proteger las contrasenas usando bcrypt antes de guardarlas en la base de datos
-     *  - manejar errores comunes como usuario ya existente, datos invalidos, etc.
-     *  - usa el servicio AuthService para la logica de negocio mediante inyeccion de dependencias eje,mplo:
-     *     constructor(private readonly authService: AuthService) {}
-     * }
-     * @member vicente silva
-     * @subtask {
-     * antes del registro mandar un correo de verificacion al usuario
-     * - usar un servicio de correo como nodemailer o sendgrid
-     *  - enviar un enlace de verificacion al correo del usuario {
-     *    - el enlace debe contener los datos registrados para que al hacer click en confirmar usuario
-     *   se registr el usuario en la base de datos
-     *   - el enlace debe tener un token de verificacion unico para evitar ataques de phishing
-     *    - el enlace debe tener una fecha de expiracion para evitar que se use despues de un tiempo
-     *  }
-     *  - manejar errores comunes como correo invalido, error al enviar correo, etc.
-     *  - usa el servicio AuthService para la logica de negocio mediante inyeccion de dependencias eje,mplo:
-     *     constructor(private readonly authService: AuthService) {}
-     * }
-     * 
-     * ejemplo de la definicion del endpoint:
-        @Get('test')
-        getEjemplo() {
-            return "prueba exito";
-        }
-     * 
-     */
-
 
   /** 
    * @member vicente silva 
@@ -116,12 +67,36 @@ export class AuthController {
     };
   }
 
+  /**
+   * @member mario astorga
+   * @endpoint registrarse
+   * @description Registra un nuevo usuario y envía un email de confirmación con un JWT
+   * @param registerDto - DTO con los datos del nuevo usuario
+   * @return Mensaje indicando que se ha enviado el email de confirmación
+   */
   @Post('registrarse')
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() registerDto:RegisterDto){
+  async register(@Body() registerDto: RegisterDto) {
     await this.authService.register(registerDto);
-    return{
-      message:'Usuario registrado'
-     };
+    return {
+      message: 'Se ha enviado un correo de confirmación. Por favor revisa tu bandeja de entrada.',
+    };
+  }
+
+  /**
+   * @member vicente silva
+   * @endpoint confirmar-registro
+   * @description Confirma el registro de un usuario verificando el JWT del email
+   * @param confirmRegisterDto - DTO con el token JWT enviado por correo
+   * @return Usuario registrado y mensaje de confirmación
+   */
+  @Post('confirmar-registro')
+  @HttpCode(HttpStatus.CREATED)
+  async confirmRegister(@Body() confirmRegisterDto: ConfirmRegisterDto) {
+    const user = await this.authService.confirmRegister(confirmRegisterDto.token);
+    return {
+      message: 'Registro confirmado exitosamente',
+      user,
+    };
   }
 }
