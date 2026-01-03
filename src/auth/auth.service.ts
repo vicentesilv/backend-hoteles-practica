@@ -138,21 +138,97 @@ export class AuthService {
         await this.usersRepository.save(user);
     }
     
-    async register(registerDto: RegisterDto):Promise<{nombre: String, email: String}>{
-        const user = await this.verifyUser(registerDto.email)
+    async register(registerDto: RegisterDto): Promise<void> {
+        const user = await this.verifyUser(registerDto.email);
         if (user) {
-            throw new BadRequestException('Usuario existente')
+            throw new BadRequestException('Usuario existente');
         }
-        const hashedPassword = await bcrypt.hash(registerDto.contrasena,SALT)
-        const newUser={
-            ...registerDto,
-            contrasena:hashedPassword
+
+        // Hashear la contraseña antes de incluirla en el token
+        const hashedPassword = await bcrypt.hash(registerDto.contrasena, SALT);
+
+        // Crear el payload con los datos del usuario
+        const payload = {
+            nombre: registerDto.nombre,
+            email: registerDto.email,
+            contrasena: hashedPassword,
+            fecha_nacimiento: registerDto.fecha_nacimiento,
+            type: 'email-verification'
+        };
+
+        // Generar el token JWT con expiración de 24 horas
+        const verificationToken = this.jwtService.sign(payload, { expiresIn: '24h' });
+
+        // Construir la URL de confirmación
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const confirmUrl = `${frontendUrl}/auth/confirmar-registro?token=${verificationToken}`;
+
+        // Enviar el correo de confirmación
+        const mailOptions = {
+            from: process.env.mail,
+            to: registerDto.email,
+            subject: 'Confirma tu registro',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #333;">¡Bienvenido ${registerDto.nombre}!</h2>
+                    <p>Gracias por registrarte. Para completar tu registro, por favor confirma tu correo electrónico haciendo clic en el siguiente botón:</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${confirmUrl}" 
+                           style="background-color: #4CAF50; color: white; padding: 12px 30px; 
+                                  text-decoration: none; border-radius: 5px; display: inline-block;">
+                            Confirmar registro
+                        </a>
+                    </div>
+                    <p>O copia y pega este enlace en tu navegador:</p>
+                    <p style="word-break: break-all; color: #666;">${confirmUrl}</p>
+                    <p style="color: #999; font-size: 12px; margin-top: 30px;">
+                        Este enlace expirará en 24 horas. Si no te registraste, ignora este correo.
+                    </p>
+                </div>
+            `,
+        };
+
+        try {
+            await this.emailService.sendMail(mailOptions);
+        } catch (error) {
+            console.error('Error al enviar el correo:', error);
+            throw new BadRequestException('Error al enviar el correo de confirmación');
         }
-        const savedUser = await this.usersRepository.save(newUser)
-        return{
+    }
+
+    async confirmRegister(token: string): Promise<{ nombre: string; email: string }> {
+        let decoded;
+        try {
+            decoded = this.jwtService.verify(token);
+        } catch (error) {
+            throw new UnauthorizedException('Token inválido o expirado');
+        }
+
+        if (decoded.type !== 'email-verification') {
+            throw new UnauthorizedException('Token no válido para esta operación');
+        }
+
+        // Verificar si el usuario ya existe
+        const existingUser = await this.verifyUser(decoded.email);
+        if (existingUser) {
+            throw new BadRequestException('El usuario ya ha sido registrado');
+        }
+
+        // Crear el nuevo usuario con los datos del token
+        const newUser = {
+            nombre: decoded.nombre,
+            email: decoded.email,
+            contrasena: decoded.contrasena, // Ya está hasheada
+            fecha_nacimiento: decoded.fecha_nacimiento,
+            isVerified: true, // Usuario verificado al confirmar el registro
+        };
+
+        const savedUser = await this.usersRepository.save(newUser);
+        
+        return {
             nombre: savedUser.nombre,
-            email: savedUser.email
-        }
+            email: savedUser.email,
+        };
     }
   
 }
