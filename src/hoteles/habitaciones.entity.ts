@@ -1,6 +1,16 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Hotel } from "./hotel.entity";
 
+export enum TipoHabitacion {
+  INDIVIDUAL = 'individual',
+  DOBLE = 'doble',
+  SUITE = 'suite',
+}
+export enum EstadoHabitacion {
+  DISPONIBLE = 'disponible',
+  RESERVADA = 'reservada',
+  MANTENIMIENTO = 'mantenimiento',
+}
 @Entity('habitaciones')
 export class Habitacion {
   @PrimaryGeneratedColumn()
@@ -14,8 +24,8 @@ export class Habitacion {
   @Column({ type: 'int' })
   numhabitacion: number;
 
-  @Column({ type: 'enum', enum: ['individual', 'doble', 'suite'] })
-  tipo: 'individual' | 'doble' | 'suite';
+  @Column({ type: 'enum', enum: TipoHabitacion })
+  tipo: TipoHabitacion;
 
   @Column({ type: 'int' })
   capacidad: number;
@@ -38,5 +48,5 @@ export class Habitacion {
   @CreateDateColumn({ type: 'timestamp' })
   fecha_registro: Date;
 
-  
+
 }
