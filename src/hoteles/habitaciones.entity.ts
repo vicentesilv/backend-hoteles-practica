@@ -34,10 +34,10 @@ export class Habitacion {
 
   @Column({
     type: 'enum',
-    enum: ['disponible', 'reservada', 'mantenimiento'],
+    enum: EstadoHabitacion,
     default: 'disponible',
   })
-  estado: 'disponible' | 'reservada' | 'mantenimiento';
+  estado: EstadoHabitacion;
 
   @Column({ type: 'text', nullable: true })
   descripcion: string;
@@ -45,8 +45,6 @@ export class Habitacion {
   @Column({ type: 'json', nullable: true })
   fotos: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn()
   fecha_registro: Date;
-
-
 }
