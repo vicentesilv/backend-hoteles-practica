@@ -9,7 +9,7 @@ export class Hotel{
     @ManyToOne(()=>User, (user)=>user.id,{
         cascade: true,
     })
-    idHotelero :  number;
+    idHotelero :  User;
 
     @Column()
     nombre : string;
@@ -25,4 +25,15 @@ export class Hotel{
 
     @CreateDateColumn({ type: 'timestamp'})
     fechaRegistro: Date;
+
+    @Column({type: 'varchar', unique: true})
+    foto : string;
 }
+/*
+- idhotelero
+- nombre
+- direccion
+- telefono
+- email
+- foto
+*/
