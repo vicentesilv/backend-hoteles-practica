@@ -1,8 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateHotelDto } from './dto/create-hotel.dto';
+import { Hotel } from './hotel.entity'; 
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository } from 'typeorm';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class HotelesService {
 
+  constructor(
+          @InjectRepository(Hotel) private readonly hotelRepo: Repository<Hotel>,
+      ){}
 
   async findOneById(id: number): Promise<Hotel | null> {
        return this.hotelRepo.findOne({ where: { id } });
@@ -31,3 +39,4 @@ export class HotelesService {
 // - email
 
 }
+
