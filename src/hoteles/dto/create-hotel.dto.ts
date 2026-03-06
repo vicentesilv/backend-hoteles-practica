@@ -4,8 +4,8 @@ import { User } from 'src/user/user.entity';
 
 export class CreateHotelDto {
   
-  @IsInt({message: 'El id debe ser un numero entero'})
-  @IsNotEmpty({message: 'El id no puede estar vacio'})
+  @IsInt({message: 'El id del hotelero debe ser un numero entero'})
+  @IsNotEmpty({message: 'El id del hotelero no puede estar vacio'})
   idHotelero: User;
 
   @IsAlpha('es-ES',{message: 'El nombre debe contener solo caracteres alfabeticos'})
