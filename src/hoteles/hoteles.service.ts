@@ -31,6 +31,11 @@ export class HotelesService {
           if (!updated) throw new NotFoundException('Hotel no encontrado');
       return updated;
       }
+  async deleteHotel(id: number): Promise<boolean> {
+    await this.hotelRepo.findOne({ where: { id } });  
+    const res = await this.hotelRepo.delete({ id });
+  return !!res.affected;
+}
 
 // - idhotelero
 // - nombre

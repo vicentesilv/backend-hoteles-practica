@@ -32,4 +32,13 @@ export class HotelesController {
       if (!updated) throw new NotFoundException('Hotel no encontrado');
       return updated;
     }
+
+  @Delete(':id')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+    async deleteHotel(@Param() params: IdParamDto): Promise<{Hotel, message: string }> {
+      const Hotel = await this.hotelesService.findOneById(params.id);
+      const deleted = await this.hotelesService.deleteHotel(params.id);
+      if (!deleted) throw new NotFoundException('Hotel no encontrado');
+      return { Hotel, message: 'Hotel eliminado' };
+    }
   }
