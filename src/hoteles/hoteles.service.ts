@@ -12,6 +12,10 @@ export class HotelesService {
           @InjectRepository(Hotel) private readonly hotelRepo: Repository<Hotel>,
       ){}
 
+  async findOneById(id: number): Promise<Hotel | null> {
+       return this.hotelRepo.findOne({ where: { id } });
+  }
+
   async createHotel(dto: CreateHotelDto): Promise<Hotel> {
       const hotel = this.hotelRepo.create(dto);
       return this.hotelRepo.save(hotel);

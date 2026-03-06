@@ -7,6 +7,15 @@ import { HotelesService } from './hoteles.service';
 export class HotelesController {
   constructor(private readonly hotelesService: HotelesService) {}
 
+  @Get(':id')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+    async getHotel(@Param() params: IdParamDto): Promise<Hotel> {
+      const Hotel = await this.hotelesService.findOneById(params.id);
+      if (!Hotel) throw new NotFoundException('Hotel no encontrado');
+      return Hotel;
+  }
+  
+  
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async createHotel(@Body() dto: CreateHotelDto): Promise<Hotel> {
