@@ -43,4 +43,8 @@ export class UserService {
     return this.userRepo.save(user);
   }
 
+  async getAllUsers(){
+    const users=await this.userRepo.find()
+    return users
+  }
 }

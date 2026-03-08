@@ -33,6 +33,14 @@ export class UserController {
     if (!updated) throw new NotFoundException('Usuario no encontrado');
     return updated;
   }*/
+ @Get()
+  @UsePipes(new ValidationPipe({whitelist: true, transform: true}))
+  async getAllUsers(): Promise<User[]>{
+    const users= await this.userService.getAllUsers()
+    if (users.length === 0) throw new NotFoundException('No hay usuarios')
+    return users;
+  }
+
  @Get(':id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async getUser(@Param() params: IdParamDto): Promise<User> {

@@ -1,6 +1,7 @@
 import { Min,IsEmail, IsString, MinLength, IsNumber, IsInt, IsNotEmpty, IsAlpha, IsNumberString, Length, IsOptional} from 'class-validator';
 import { User } from 'src/user/user.entity';
 import { Type } from 'class-transformer';
+import { IsName } from 'src/common/decorators/IsName.decorator';
 
 export class GetHotelDto {
   @IsNumber()
@@ -52,7 +53,7 @@ export class CreateHotelDto {
   @IsNotEmpty({message: 'El id no puede estar vacio'})
   idHotelero: User;
 
-  @IsAlpha('es-ES',{message: 'El nombre debe contener solo caracteres alfabeticos'})
+  @IsName('es')
   @MinLength(3, {message: 'El nombre debe ser mayor a $constraint1 caracteres'})
   nombre: string;
 
