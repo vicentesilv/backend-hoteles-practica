@@ -42,7 +42,7 @@ export class Habitacion {
   @Column({ type: 'text', nullable: true })
   descripcion: string;
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: 'json', nullable: true, default: null })
   fotos: string;
 
   @CreateDateColumn()
