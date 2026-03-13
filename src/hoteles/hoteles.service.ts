@@ -1,11 +1,10 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateHotelDto } from './dto/create-hotel.dto';
 import { Hotel } from './hotel.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { Habitacion } from './habitaciones.entity';
-import { UserService } from 'src/user/user.service';
 import { CreateHabitacionDTO } from './dto/create-habitacion.dto';
 
 @Injectable()
@@ -58,30 +57,5 @@ export class HotelesService {
     });
     return await this.habitacionRepository.save(habitacion);
   }
-  // - idhotelero
-  // - nombre
-  // - direccion
-  // - telefono
-  // - email
-
-  async createHotel(dto: CreateHotelDto): Promise<Hotel> {
-      const hotel = this.hotelRepo.create(dto);
-      return this.hotelRepo.save(hotel);
-  }
-
-  async updateHotel(id: number, email: string, idHotelero: User, nombre: string, direccion: string, telefono: string): Promise<Hotel> {
-          const exists = await this.hotelRepo.exist({ where: { id } });
-          if (!exists) throw new NotFoundException('Hotel no encontrado');
-          const res = await this.hotelRepo.update({ id }, { idHotelero, email, nombre, direccion, telefono });
-          if (!res.affected) throw new NotFoundException('Sin cambios');
-  
-          const updated = await this.hotelRepo.findOne({ where: { id } });
-          if (!updated) throw new NotFoundException('Hotel no encontrado');
-      return updated;
-      }
-  async deleteHotel(id: number): Promise<boolean> {
-    await this.hotelRepo.findOne({ where: { id } });  
-    const res = await this.hotelRepo.delete({ id });
-  return !!res.affected;
 }
 

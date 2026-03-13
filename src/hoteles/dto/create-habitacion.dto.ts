@@ -4,7 +4,8 @@ import {
   IsEnum,
   IsNumber,
   IsString,
-  MaxLength
+  MaxLength,
+  IsOptional
 } from "class-validator";
 import { TipoHabitacion } from "../habitaciones.entity";
 
@@ -29,6 +30,7 @@ export class CreateHabitacionDTO {
   @IsNumber({}, { message: 'El precio tiene que ser un numero' })
   precio: number;
 
+  @IsOptional()
   @IsString({ message: 'La descripcion tiene que ser un texto' })
   @MaxLength(255, { message: 'El maximo de caracteres es $constraint1' })
   descripcion: string;
