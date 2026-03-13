@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateHotelDto } from './dto/create-hotel.dto';
 import { Hotel } from './hotel.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { Habitacion } from './habitaciones.entity';
 import { CreateHabitacionDTO } from './dto/create-habitacion.dto';
