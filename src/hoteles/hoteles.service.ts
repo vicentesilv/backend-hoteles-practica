@@ -47,7 +47,7 @@ export class HotelesService {
       throw new NotFoundException('El hotel no existe');
     }
 
-    let habitacion = await this.habitacionRepository.create({
+    const habitacion = this.habitacionRepository.create({
       idhotel: hotel,
       numhabitacion: request.numhabitacion,
       tipo: request.tipo,
@@ -55,7 +55,7 @@ export class HotelesService {
       precio: request.precio,
       descripcion: request.descripcion
     });
-    return await this.habitacionRepository.save(habitacion);
+    return this.habitacionRepository.save(habitacion);
   }
 }
 
