@@ -19,7 +19,7 @@ export class Habitacion {
   @ManyToOne(() => Hotel, (hotel) => hotel.id, {
     cascade: true,
   })
-  idhotel: number;
+  idhotel: Hotel;
 
   @Column({ type: 'int' })
   numhabitacion: number;

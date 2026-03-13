@@ -4,10 +4,10 @@ import { Hotel } from './hotel.entity';
 import { Habitacion } from './habitaciones.entity';
 import { HotelesController } from './hoteles.controller';
 import { HotelesService } from './hoteles.service';
-import { UserService } from 'src/user/user.service';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Hotel, Habitacion]), UserService],
+  imports: [TypeOrmModule.forFeature([Hotel, Habitacion]), UserModule],
   controllers: [HotelesController],
   providers: [HotelesService],
   // exports: [HotelesService],

@@ -43,13 +43,20 @@ export class HotelesService {
   }
 
   async createHabitacion(request: CreateHabitacionDTO): Promise<Habitacion> {
-    const hotel_exists = this.hotelRepo.findOneById(request.idHotel);
-    if (!hotel_exists) {
+    const hotel = await this.hotelRepo.findOneBy({id: request.idHotel});
+    if (!hotel) {
       throw new NotFoundException('El hotel no existe');
     }
-    let habitacion = this.habitacionRepository.create();
 
-    return habitacion;
+    let habitacion = await this.habitacionRepository.create({
+      idhotel: hotel,
+      numhabitacion: request.numhabitacion,
+      tipo: request.tipo,
+      capacidad: request.capacidad,
+      precio: request.precio,
+      descripcion: request.descripcion
+    });
+    return await this.habitacionRepository.save(habitacion);
   }
   // - idhotelero
   // - nombre

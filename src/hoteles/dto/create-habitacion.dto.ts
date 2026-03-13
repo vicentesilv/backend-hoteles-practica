@@ -31,5 +31,5 @@ export class CreateHabitacionDTO {
 
   @IsString({ message: 'La descripcion tiene que ser un texto' })
   @MaxLength(255, { message: 'El maximo de caracteres es $constraint1' })
-  descripcion: String;
+  descripcion: string;
 }
