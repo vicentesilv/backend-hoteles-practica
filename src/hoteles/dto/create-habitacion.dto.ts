@@ -9,7 +9,7 @@ import {
 } from "class-validator";
 import { TipoHabitacion } from "../habitaciones.entity";
 
-export class CreateHabitacionDTO {
+export class CreateHabitacionDto {
   @IsNotEmpty({ message: 'La habitacion necesita un hotel' })
   @IsInt({ message: 'El id neesita ser un entero' })
   idHotel: number;
