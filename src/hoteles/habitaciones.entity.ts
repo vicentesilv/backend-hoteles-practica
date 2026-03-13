@@ -45,6 +45,6 @@ export class Habitacion {
   @Column({ type: 'json', nullable: true, default: null })
   fotos: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   fecha_registro: Date;
 }
