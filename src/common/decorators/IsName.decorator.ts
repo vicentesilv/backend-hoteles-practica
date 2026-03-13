@@ -5,8 +5,8 @@ import {
 } from 'class-validator';
 
 const messages: Record<string, string> = {
-  es: '$property solo debe contener letras (a-z, A-Z) y espacios',
-  en: '$property must only contain letters (a-z, A-Z) and spaces',
+  es: '$property solo debe contener letras y espacios',
+  en: '$property must only contain letters and spaces',
 };
 
 export function IsName(
@@ -25,7 +25,10 @@ export function IsName(
       },
       validator: {
         validate(value: any, _args: ValidationArguments): boolean {
-          return typeof value === 'string' && /^[a-zA-Z\s]+$/.test(value);
+          return (
+            typeof value === 'string' &&
+            /^[\p{L}\p{M}\s'-]+$/u.test(value)
+          );
         },
       },
     });
