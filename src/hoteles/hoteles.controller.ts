@@ -2,7 +2,7 @@ import { Controller,Post, Get, Put, Delete, Param, Body, NotFoundException, UseP
 import { CreateHotelDto, UpdateHotelDto, IdParamDto } from './dto/create-hotel.dto';
 import { Hotel } from './hotel.entity'; 
 import { HotelesService } from './hoteles.service';
-import { CreateHabitacionDTO } from './dto/create-habitacion.dto';
+import { CreateHabitacionDto } from './dto/create-habitacion.dto';
 
 @Controller('hoteles')
 export class HotelesController {
@@ -47,7 +47,7 @@ export class HotelesController {
 
   @Post('habitacion')
   @UsePipes(new ValidationPipe({whitelist: true, transform: true}))
-  async createHabitacion(@Body() request: CreateHabitacionDTO){
+  async createHabitacion(@Body() request: CreateHabitacionDto){
     return await this.hotelesService.createHabitacion(request);
   }
 }

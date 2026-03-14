@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { Habitacion } from './habitaciones.entity';
-import { CreateHabitacionDTO } from './dto/create-habitacion.dto';
+import { CreateHabitacionDto } from './dto/create-habitacion.dto';
 
 @Injectable()
 export class HotelesService {
@@ -41,7 +41,7 @@ export class HotelesService {
     return !!res.affected;
   }
 
-  async createHabitacion(request: CreateHabitacionDTO): Promise<Habitacion> {
+  async createHabitacion(request: CreateHabitacionDto): Promise<Habitacion> {
     const hotel = await this.hotelRepo.findOneBy({id: request.idHotel});
     if (!hotel) {
       throw new NotFoundException('El hotel no existe');
