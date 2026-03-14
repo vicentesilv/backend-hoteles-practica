@@ -6,38 +6,38 @@ export enum UserRol {
 }
 
 @Entity()
-export class User{
-    @PrimaryGeneratedColumn()
-    id: number;
-    @Column({ type: 'varchar', length: 150 })
-    nombre: string;
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+  @Column({ type: 'varchar', length: 150 })
+  nombre: string;
 
-    @Column({ type: 'varchar', length: 255, unique: true })
-    email: string;
+  @Column({ type: 'varchar', length: 255, unique: true })
+  email: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: false, select: false })
-    contrasena: string;
+  @Column({ type: 'varchar', length: 255, nullable: false, select: false })
+  contrasena: string;
 
-    @Column({ type: 'date'})
-    fecha_nacimiento: Date;
+  @Column({ type: 'date' })
+  fecha_nacimiento: Date;
 
-    @Column({ type: 'enum', enum: UserRol, default: UserRol.CLIENTE, nullable: false })
-    rol: UserRol;
+  @Column({ type: 'enum', enum: UserRol, default: UserRol.CLIENTE, nullable: false })
+  rol: UserRol;
 
-    @Column({ type: 'varchar', length: 512, nullable: true, select: false})
-    jwtVerificationToken: string;
+  @Column({ type: 'varchar', length: 512, nullable: true, select: false })
+  jwtVerificationToken: string;
 
-    @Column({ type: 'boolean', default: false})
-    isVerified: boolean | null;
+  @Column({ type: 'boolean', default: false })
+  isVerified: boolean | null;
 
-    @CreateDateColumn({ type: 'timestamp' })
-    fecha_registro: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  fecha_registro: Date;
 
-    @Column({ type: 'varchar', length: 512, nullable: true, select: false })
-    resetPasswordToken: string | null;
+  @Column({ type: 'varchar', length: 512, nullable: true, select: false })
+  resetPasswordToken: string | null;
 
-    @Column({ type: 'timestamp', nullable: true, select: false })
-    resetPasswordExpires: Date | null;
+  @Column({ type: 'timestamp', nullable: true, select: false })
+  resetPasswordExpires: Date | null;
 
 }
 /**aqui les dejo un ejemplo de como manejar las entidades en NestJS usando TypeORM

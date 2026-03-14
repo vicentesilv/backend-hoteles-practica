@@ -1,6 +1,16 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Hotel } from "./hotel.entity";
 
+export enum TipoHabitacion {
+  INDIVIDUAL = 'individual',
+  DOBLE = 'doble',
+  SUITE = 'suite',
+}
+export enum EstadoHabitacion {
+  DISPONIBLE = 'disponible',
+  RESERVADA = 'reservada',
+  MANTENIMIENTO = 'mantenimiento',
+}
 @Entity('habitaciones')
 export class Habitacion {
   @PrimaryGeneratedColumn()
@@ -9,13 +19,13 @@ export class Habitacion {
   @ManyToOne(() => Hotel, (hotel) => hotel.id, {
     cascade: true,
   })
-  idhotel: number;
+  idhotel: Hotel;
 
   @Column({ type: 'int' })
   numhabitacion: number;
 
-  @Column({ type: 'enum', enum: ['individual', 'doble', 'suite'] })
-  tipo: 'individual' | 'doble' | 'suite';
+  @Column({ type: 'enum', enum: TipoHabitacion })
+  tipo: TipoHabitacion;
 
   @Column({ type: 'int' })
   capacidad: number;
@@ -24,19 +34,17 @@ export class Habitacion {
 
   @Column({
     type: 'enum',
-    enum: ['disponible', 'reservada', 'mantenimiento'],
+    enum: EstadoHabitacion,
     default: 'disponible',
   })
-  estado: 'disponible' | 'reservada' | 'mantenimiento';
+  estado: EstadoHabitacion;
 
   @Column({ type: 'text', nullable: true })
   descripcion: string;
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: 'json', nullable: true, default: null })
   fotos: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   fecha_registro: Date;
-
-  
 }
