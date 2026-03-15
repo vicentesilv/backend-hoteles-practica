@@ -6,7 +6,34 @@ import { CreateHabitacionDto } from './dto/create-habitacion.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
-import { existsSync, mkdirSync, unlinkSync } from 'fs';
+import { existsSync, mkdirSync, unlinkSync } from 'fs'; 
+
+function getHotelImageUploadOptions() {
+  return {
+    storage: diskStorage({
+      destination: (_req, _file, cb) => {
+        const uploadPath = join(process.cwd(), 'uploads', 'hoteles');
+        if (!existsSync(uploadPath)) {
+          mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+      },
+      filename: (_req, file, cb) => {
+        const fileName = `hotel-${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
+        cb(null, fileName);
+      },
+    }),
+    fileFilter: (_req, file, cb) => {
+      if (!file.mimetype.match(/^image\/(jpg|jpeg|png|webp)$/)) {
+        return cb(new BadRequestException('Solo se permiten imágenes JPG, JPEG, PNG o WEBP'), false);
+      }
+      cb(null, true);
+    },
+    limits: {
+      fileSize: 5 * 1024 * 1024,
+    },
+  };
+}
 
 @Controller('hoteles')
 export class HotelesController {
@@ -28,32 +55,7 @@ export class HotelesController {
   
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  @UseInterceptors(
-    FileInterceptor('foto', {
-      storage: diskStorage({
-        destination: (_req, _file, cb) => {
-          const uploadPath = join(process.cwd(), 'uploads', 'hoteles');
-          if (!existsSync(uploadPath)) {
-            mkdirSync(uploadPath, { recursive: true });
-          }
-          cb(null, uploadPath);
-        },
-        filename: (_req, file, cb) => {
-          const fileName = `hotel-${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
-          cb(null, fileName);
-        },
-      }),
-      fileFilter: (_req, file, cb) => {
-        if (!file.mimetype.match(/^image\/(jpg|jpeg|png|webp)$/)) {
-          return cb(new BadRequestException('Solo se permiten imágenes JPG, JPEG, PNG o WEBP'), false);
-        }
-        cb(null, true);
-      },
-      limits: {
-        fileSize: 5 * 1024 * 1024,
-      },
-    }),
-  )
+  @UseInterceptors(FileInterceptor('foto', getHotelImageUploadOptions()))
   async createHotel(@Body() dto: CreateHotelDto, @UploadedFile() file?: { filename?: string }): Promise<Hotel> {
     if (file?.filename) {
       dto.foto = `/uploads/hoteles/${file.filename}`;
@@ -74,11 +76,42 @@ export class HotelesController {
 
   @Put(':id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  @UseInterceptors(FileInterceptor('foto', getHotelImageUploadOptions()))
   async updateHotel(
     @Param() params: IdParamDto,
     @Body() dto: UpdateHotelDto,
+    @UploadedFile() file?: { filename?: string },
   ): Promise<Hotel> {
-    const updated = await this.hotelesService.updateHotel(params.id, dto.email, dto.idHotelero, dto.nombre, dto.direccion, dto.telefono);
+    const currentHotel = await this.hotelesService.findOneById(params.id);
+    if (!currentHotel) throw new NotFoundException('Hotel no encontrado');
+
+    if (file?.filename) {
+      dto.foto = `/uploads/hoteles/${file.filename}`;
+    }
+
+    let updated: Hotel;
+    try {
+      updated = await this.hotelesService.updateHotel(params.id, dto);
+    } catch (error) {
+      if (file?.filename) {
+        const uploadedFilePath = join(process.cwd(), 'uploads', 'hoteles', file.filename);
+        if (existsSync(uploadedFilePath)) {
+          unlinkSync(uploadedFilePath);
+        }
+      }
+      throw error;
+    }
+
+    if (file?.filename && currentHotel.foto && currentHotel.foto !== updated.foto) {
+      const oldPhotoName = currentHotel.foto.split('/').pop();
+      if (oldPhotoName) {
+        const oldFilePath = join(process.cwd(), 'uploads', 'hoteles', oldPhotoName);
+        if (existsSync(oldFilePath)) {
+          unlinkSync(oldFilePath);
+        }
+      }
+    }
+
     if (!updated) throw new NotFoundException('Hotel no encontrado');
     return updated;
   }
@@ -89,8 +122,22 @@ export class HotelesController {
     const Hotel = await this.hotelesService.findOneById(params.id);
     const deleted = await this.hotelesService.deleteHotel(params.id);
     if (!deleted) throw new NotFoundException('Hotel no encontrado');
+
+    if (Hotel?.foto) {
+      const oldPhotoName = Hotel.foto.split('/').pop();
+      if (oldPhotoName) {
+        const oldFilePath = join(process.cwd(), 'uploads', 'hoteles', oldPhotoName);
+        if (existsSync(oldFilePath)) {
+          unlinkSync(oldFilePath);
+        }
+      }
+    }
+
     return { Hotel, message: 'Hotel eliminado' };
   }
+
+
+
 
   @Post('habitacion')
   @UsePipes(new ValidationPipe({whitelist: true, transform: true}))

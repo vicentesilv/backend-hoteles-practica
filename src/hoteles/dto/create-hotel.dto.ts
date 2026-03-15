@@ -22,7 +22,6 @@ export class UpdateHotelDto {
   @IsOptional()
   idHotelero: number;
 
-  @IsAlpha('es-ES',{message: 'El nombre nuevo debe contener solo caracteres alfabeticos'})
   @IsOptional()
   @MinLength(3, {message: 'El nombre nuevo debe ser mayor a $constraint1 caracteres'})
   nombre: string;
@@ -40,6 +39,10 @@ export class UpdateHotelDto {
   @IsEmail({}, {message: 'El email nuevo debe ser un correo valido'})
   @IsOptional()
   email: string;
+
+  @IsString()
+  @IsOptional()
+  foto: string;
 
 }
 // - idhotelero

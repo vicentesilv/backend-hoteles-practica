@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateHotelDto } from './dto/create-hotel.dto';
+import { CreateHotelDto, UpdateHotelDto } from './dto/create-hotel.dto';
 import { Hotel } from './hotel.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -40,19 +40,20 @@ export class HotelesService {
     return this.hotelRepo.save(hotel);
   }
 
-  async updateHotel(id: number, email?: string, idHotelero?: number, nombre?: string, direccion?: string, telefono?: string): Promise<Hotel> {
+  async updateHotel(id: number, dto: UpdateHotelDto): Promise<Hotel> {
     const exists = await this.hotelRepo.exist({ where: { id } });
     if (!exists) throw new NotFoundException('Hotel no encontrado');
 
-    const payload: Partial<Hotel> = {
-      email,
-      nombre,
-      direccion,
-      telefono,
-    };
+    const payload: Partial<Hotel> = {};
 
-    if (idHotelero !== undefined) {
-      const user = await this.userService.findOneById(idHotelero);
+    if (dto.email !== undefined) payload.email = dto.email;
+    if (dto.nombre !== undefined) payload.nombre = dto.nombre;
+    if (dto.direccion !== undefined) payload.direccion = dto.direccion;
+    if (dto.telefono !== undefined) payload.telefono = dto.telefono;
+    if (dto.foto !== undefined) payload.foto = dto.foto;
+
+    if (dto.idHotelero !== undefined) {
+      const user = await this.userService.findOneById(dto.idHotelero);
       if (!user) {
         throw new NotFoundException('El usuario hotelero no existe');
       }
@@ -70,6 +71,7 @@ export class HotelesService {
     const res = await this.hotelRepo.delete({ id });
     return !!res.affected;
   }
+
 
   async createHabitacion(request: CreateHabitacionDto): Promise<Habitacion> {
     const hotel = await this.hotelRepo.findOneBy({id: request.idHotel});
