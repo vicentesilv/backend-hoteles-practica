@@ -6,9 +6,7 @@ export class Hotel{
     @PrimaryGeneratedColumn()
     id : number;
 
-    @ManyToOne(()=>User, (user)=>user.id,{
-        cascade: true,
-    })
+    @ManyToOne(()=>User, (user)=>user.id)
     idHotelero :  User;
 
     @Column()
@@ -22,6 +20,9 @@ export class Hotel{
 
     @Column()
     email : string;
+
+    @Column({ nullable: true })
+    foto : string;
 
     @CreateDateColumn({ type: 'timestamp'})
     fechaRegistro: Date;

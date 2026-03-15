@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { Habitacion } from './habitaciones.entity';
 import { CreateHabitacionDto } from './dto/create-habitacion.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class HotelesService {
@@ -14,7 +15,8 @@ export class HotelesService {
     @InjectRepository(Hotel)
     private readonly hotelRepo: Repository<Hotel>,
     @InjectRepository(Habitacion)
-    private readonly habitacionRepository: Repository<Habitacion>
+    private readonly habitacionRepository: Repository<Habitacion>,
+    private readonly userService: UserService,
   ) { }
 
   async findOneById(id: number): Promise<Hotel | null> {
@@ -26,14 +28,38 @@ export class HotelesService {
   }
 
   async createHotel(dto: CreateHotelDto): Promise<Hotel> {
-    const hotel = this.hotelRepo.create(dto);
+    const user = await this.userService.findOneById(dto.idHotelero);
+    if (!user) {
+      throw new NotFoundException('El usuario hotelero no existe');
+    }
+
+    const hotel = this.hotelRepo.create({
+      ...dto,
+      idHotelero: user,
+    });
     return this.hotelRepo.save(hotel);
   }
 
-  async updateHotel(id: number, email: string, idHotelero: User, nombre: string, direccion: string, telefono: string): Promise<Hotel> {
+  async updateHotel(id: number, email?: string, idHotelero?: number, nombre?: string, direccion?: string, telefono?: string): Promise<Hotel> {
     const exists = await this.hotelRepo.exist({ where: { id } });
     if (!exists) throw new NotFoundException('Hotel no encontrado');
-    const res = await this.hotelRepo.update({ id }, { idHotelero, email, nombre, direccion, telefono });
+
+    const payload: Partial<Hotel> = {
+      email,
+      nombre,
+      direccion,
+      telefono,
+    };
+
+    if (idHotelero !== undefined) {
+      const user = await this.userService.findOneById(idHotelero);
+      if (!user) {
+        throw new NotFoundException('El usuario hotelero no existe');
+      }
+      payload.idHotelero = user;
+    }
+
+    const res = await this.hotelRepo.update({ id }, payload);
     if (!res.affected) throw new NotFoundException('Sin cambios');
     const updated = await this.hotelRepo.findOne({ where: { id } });
     if (!updated) throw new NotFoundException('Hotel no encontrado');

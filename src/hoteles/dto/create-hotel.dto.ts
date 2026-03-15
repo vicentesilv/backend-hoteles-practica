@@ -1,6 +1,5 @@
 import { Min,IsEmail, IsString, MinLength, IsNumber, IsInt, IsNotEmpty, IsAlpha, IsNumberString, Length, IsOptional} from 'class-validator';
-import { User } from 'src/user/user.entity';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsName } from 'src/common/decorators/IsName.decorator';
 
 export class GetHotelDto {
@@ -17,9 +16,11 @@ export class IdParamDto {
 
 export class UpdateHotelDto {
 
+  @Transform(({ value }) => (value === undefined || value === null || value === '' ? undefined : Number(value)))
+  @Type(() => Number)
   @IsInt({message: 'El id nuevo debe ser un numero entero'})
   @IsOptional()
-  idHotelero: User;
+  idHotelero: number;
 
   @IsAlpha('es-ES',{message: 'El nombre nuevo debe contener solo caracteres alfabeticos'})
   @IsOptional()
@@ -49,9 +50,11 @@ export class UpdateHotelDto {
 
 export class CreateHotelDto {
   
+  @Transform(({ value }) => Number(value))
+  @Type(() => Number)
   @IsInt({message: 'El id debe ser un numero entero'})
   @IsNotEmpty({message: 'El id no puede estar vacio'})
-  idHotelero: User;
+  idHotelero: number;
 
   @IsName('es')
   @MinLength(3, {message: 'El nombre debe ser mayor a $constraint1 caracteres'})
@@ -69,6 +72,7 @@ export class CreateHotelDto {
   email: string;
 
   @IsString()
+  @IsOptional()
   foto : string;
 
 
