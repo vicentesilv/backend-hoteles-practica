@@ -17,7 +17,10 @@ export class HotelesController {
     if (!Hotel) throw new NotFoundException('Hotel no encontrado');
     return Hotel;
   }
-  
+  @Get()
+  async getAllHoteles():Promise<Hotel[]>{
+    return this.hotelesService.findAllHoteles();
+  }
   
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))

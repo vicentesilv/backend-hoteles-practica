@@ -21,6 +21,10 @@ export class HotelesService {
     return this.hotelRepo.findOne({ where: { id } });
   }
 
+  async findAllHoteles(): Promise<Hotel[]> {
+    return this.hotelRepo.find();
+  }
+
   async createHotel(dto: CreateHotelDto): Promise<Hotel> {
     const hotel = this.hotelRepo.create(dto);
     return this.hotelRepo.save(hotel);
