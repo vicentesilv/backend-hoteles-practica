@@ -59,18 +59,21 @@ export class HotelesService {
   }
 
   async updateHabitacion(request: UpdateHabitacionDto, id: number){
-    const habitacion = await this.habitacionRepository.findOneBy({id: id});
+    const habitacion = await this.habitacionRepository.findOne({
+      where: { id },
+      relations: { idHotel: true },
+    });
     if (!habitacion){
       throw new NotFoundException('La habitacion no existe');
     }
     let hotelAsignado = habitacion.idHotel
     if (request.idHotel != null) {
-    const hotelFromHabitacion = await this.hotelRepo.findOneBy({ id: request.idHotel });
-    if (!hotelFromHabitacion) {
-      throw new NotFoundException('El hotel no existe');
+      const hotelFromHabitacion = await this.hotelRepo.findOneBy({ id: request.idHotel });
+      if (!hotelFromHabitacion) {
+        throw new NotFoundException('El hotel no existe');
+      }
+      hotelAsignado = hotelFromHabitacion;
     }
-    hotelAsignado = hotelFromHabitacion;
-  }
     const updatedHabitacion = this.habitacionRepository.merge(habitacion, {
       idHotel: hotelAsignado,
       numHabitacion: request.numHabitacion ?? habitacion.numHabitacion,
