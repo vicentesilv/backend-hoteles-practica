@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Hotel } from "./hotel.entity";
 
 export enum TipoHabitacion {
@@ -19,9 +19,10 @@ export class Habitacion {
   @ManyToOne(() => Hotel, (hotel) => hotel.id, {
     cascade: true,
   })
+  @JoinColumn({ name: 'idhotel' })
   idHotel: Hotel;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', name: 'numhabitacion' })
   numHabitacion: number;
 
   @Column({ type: 'enum', enum: TipoHabitacion })
