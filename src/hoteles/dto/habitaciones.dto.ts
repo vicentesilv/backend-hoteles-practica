@@ -7,7 +7,7 @@ import {
   MaxLength,
   IsOptional
 } from "class-validator";
-import { TipoHabitacion } from "../habitaciones.entity";
+import { EstadoHabitacion, TipoHabitacion } from "../habitaciones.entity";
 
 export class CreateHabitacionDto {
   @IsNotEmpty({ message: 'La habitacion necesita un hotel' })
@@ -56,6 +56,10 @@ export class UpdateHabitacionDto {
   @IsOptional()
   @IsNumber({}, { message: 'El precio tiene que ser un numero' })
   precio: number;
+  
+  @IsOptional()
+  @IsEnum(EstadoHabitacion, {message: 'Escoge un estado valido'})
+  estado:EstadoHabitacion
 
   @IsOptional()
   @IsString({ message: 'La descripcion tiene que ser un texto' })

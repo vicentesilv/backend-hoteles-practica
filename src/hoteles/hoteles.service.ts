@@ -76,6 +76,7 @@ export class HotelesService {
       numHabitacion: request.numHabitacion ?? habitacion.numHabitacion,
       tipo: request.tipo ?? habitacion.tipo,
       capacidad: request.capacidad ?? habitacion.capacidad,
+      estado: request.estado ?? habitacion.estado, 
       precio: request.precio ?? habitacion.precio,
       descripcion: request.descripcion ?? habitacion.descripcion,
     });
