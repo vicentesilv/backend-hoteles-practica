@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
 import { Habitacion } from './habitaciones.entity';
-import { CreateHabitacionDto } from './dto/create-habitacion.dto';
+import { CreateHabitacionDto, UpdateHabitacionDto } from './dto/habitaciones.dto';
 
 @Injectable()
 export class HotelesService {
@@ -48,14 +48,38 @@ export class HotelesService {
     }
 
     const habitacion = this.habitacionRepository.create({
-      idhotel: hotel,
-      numhabitacion: request.numhabitacion,
+      idHotel: hotel,
+      numHabitacion: request.numHabitacion,
       tipo: request.tipo,
       capacidad: request.capacidad,
       precio: request.precio,
       descripcion: request.descripcion
     });
     return this.habitacionRepository.save(habitacion);
+  }
+
+  async updateHabitacion(request: UpdateHabitacionDto, id: number){
+    const habitacion = await this.habitacionRepository.findOneBy({id: id});
+    if (!habitacion){
+      throw new NotFoundException('La habitacion no existe');
+    }
+    let hotelAsignado = habitacion.idHotel
+    if (request.idHotel != null) {
+    const hotelFromHabitacion = await this.hotelRepo.findOneBy({ id: request.idHotel });
+    if (!hotelFromHabitacion) {
+      throw new NotFoundException('El hotel no existe');
+    }
+    hotelAsignado = hotelFromHabitacion;
+  }
+    const updatedHabitacion = this.habitacionRepository.merge(habitacion, {
+      idHotel: hotelAsignado,
+      numHabitacion: request.numHabitacion ?? habitacion.numHabitacion,
+      tipo: request.tipo ?? habitacion.tipo,
+      capacidad: request.capacidad ?? habitacion.capacidad,
+      precio: request.precio ?? habitacion.precio,
+      descripcion: request.descripcion ?? habitacion.descripcion,
+    });
+    return this.habitacionRepository.save(updatedHabitacion)
   }
 }
 

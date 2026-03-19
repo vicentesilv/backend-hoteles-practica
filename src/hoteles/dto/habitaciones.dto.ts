@@ -11,12 +11,12 @@ import { TipoHabitacion } from "../habitaciones.entity";
 
 export class CreateHabitacionDto {
   @IsNotEmpty({ message: 'La habitacion necesita un hotel' })
-  @IsInt({ message: 'El id neesita ser un entero' })
+  @IsInt({ message: 'El id necesita ser un entero' })
   idHotel: number;
 
   @IsNotEmpty({ message: 'La habitacion debe tener un numero' })
   @IsInt({ message: 'El numero tiene que ser un entero' })
-  numhabitacion: number;
+  numHabitacion: number;
 
   @IsEnum(TipoHabitacion, { message: 'Escoge un tipo valido' })
   @IsNotEmpty({ message: 'El tipo de habitacion no puede estar vacio' })
@@ -27,6 +27,33 @@ export class CreateHabitacionDto {
   capacidad: number;
 
   @IsNotEmpty({ message: 'El precio no puede estar vacio' })
+  @IsNumber({}, { message: 'El precio tiene que ser un numero' })
+  precio: number;
+
+  @IsOptional()
+  @IsString({ message: 'La descripcion tiene que ser un texto' })
+  @MaxLength(255, { message: 'El maximo de caracteres es $constraint1' })
+  descripcion: string;
+}
+
+export class UpdateHabitacionDto {
+  @IsOptional()
+  @IsInt({message: 'El id necesita ser un entero'})
+  idHotel: number;
+  
+  @IsOptional()
+  @IsInt({ message: 'El numero tiene que ser un entero' })
+  numHabitacion: number;
+
+  @IsOptional()
+  @IsEnum(TipoHabitacion, { message: 'Escoge un tipo valido' })
+  tipo: TipoHabitacion;
+
+  @IsOptional()
+  @IsInt({ message: 'La capacidad tiene que ser un numero entero' })
+  capacidad: number;
+
+  @IsOptional()
   @IsNumber({}, { message: 'El precio tiene que ser un numero' })
   precio: number;
 

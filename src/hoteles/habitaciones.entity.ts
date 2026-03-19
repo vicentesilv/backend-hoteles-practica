@@ -19,10 +19,10 @@ export class Habitacion {
   @ManyToOne(() => Hotel, (hotel) => hotel.id, {
     cascade: true,
   })
-  idhotel: Hotel;
+  idHotel: Hotel;
 
   @Column({ type: 'int' })
-  numhabitacion: number;
+  numHabitacion: number;
 
   @Column({ type: 'enum', enum: TipoHabitacion })
   tipo: TipoHabitacion;
