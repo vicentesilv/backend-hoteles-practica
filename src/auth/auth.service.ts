@@ -19,13 +19,7 @@ export class AuthService {
         // Inicializar el servicio de correo
         this.emailService = new confignodeemail();
     }
-
-    /**
-     * @member vicente silva
-     * @description Verifica si un usuario existe por su email 
-     * @param email - Email del usuario a verificar
-     * @returns El usuario si existe, null si no existe
-     */
+    
     async verifyUser(email: string): Promise<User | null> {
         return this.usersRepository.findOne({ 
             where: { email },
