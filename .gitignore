@@ -69,3 +69,4 @@ docker-compose.override.yml
 *.pid
 *.pid.lock
 .npm
+dist
