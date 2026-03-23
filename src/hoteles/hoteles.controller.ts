@@ -1,14 +1,30 @@
-import { Controller,Post, Get, Put, Delete, Param, Body, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
-import { CreateHotelDto, UpdateHotelDto, IdParamDto } from './dto/create-hotel.dto';
-import { Hotel } from './hotel.entity'; 
+import {
+  Controller,
+  Post,
+  Get,
+  Put,
+  Delete,
+  Param,
+  Body,
+  NotFoundException,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+import {
+  CreateHotelDto,
+  UpdateHotelDto,
+  IdParamDto,
+} from './dto/create-hotel.dto';
+import { Hotel } from './hotel.entity';
 import { HotelesService } from './hoteles.service';
-import { CreateHabitacionDto, UpdateHabitacionDto } from './dto/habitaciones.dto';
+import {
+  CreateHabitacionDto,
+  UpdateHabitacionDto,
+} from './dto/habitaciones.dto';
 
 @Controller('hoteles')
 export class HotelesController {
-  constructor(
-    private readonly hotelesService: HotelesService,
-  ) {}
+  constructor(private readonly hotelesService: HotelesService) {}
 
   @Get(':id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
@@ -17,8 +33,7 @@ export class HotelesController {
     if (!Hotel) throw new NotFoundException('Hotel no encontrado');
     return Hotel;
   }
-  
-  
+
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async createHotel(@Body() dto: CreateHotelDto): Promise<Hotel> {
@@ -31,14 +46,23 @@ export class HotelesController {
     @Param() params: IdParamDto,
     @Body() dto: UpdateHotelDto,
   ): Promise<Hotel> {
-    const updated = await this.hotelesService.updateHotel(params.id, dto.email, dto.idHotelero, dto.nombre, dto.direccion, dto.telefono);
+    const updated = await this.hotelesService.updateHotel(
+      params.id,
+      dto.email,
+      dto.idHotelero,
+      dto.nombre,
+      dto.direccion,
+      dto.telefono,
+    );
     if (!updated) throw new NotFoundException('Hotel no encontrado');
     return updated;
   }
 
   @Delete(':id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async deleteHotel(@Param() params: IdParamDto): Promise<{Hotel, message: string }> {
+  async deleteHotel(
+    @Param() params: IdParamDto,
+  ): Promise<{ Hotel; message: string }> {
     const Hotel = await this.hotelesService.findOneById(params.id);
     const deleted = await this.hotelesService.deleteHotel(params.id);
     if (!deleted) throw new NotFoundException('Hotel no encontrado');
@@ -46,18 +70,28 @@ export class HotelesController {
   }
 
   @Post('habitacion')
-  @UsePipes(new ValidationPipe({whitelist: true, transform: true}))
-  async createHabitacion(@Body() request: CreateHabitacionDto){
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async createHabitacion(@Body() request: CreateHabitacionDto) {
     return await this.hotelesService.createHabitacion(request);
   }
 
   @Put('habitacion/:id')
-  @UsePipes(new ValidationPipe({whitelist: true, transform: true}))
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async updateHabitacion(
-  @Body() 
-  request: UpdateHabitacionDto, 
-  @Param() 
-  id:IdParamDto ){
+    @Body()
+    request: UpdateHabitacionDto,
+    @Param()
+    id: IdParamDto,
+  ) {
     return await this.hotelesService.updateHabitacion(request, id.id);
+  }
+
+  @Delete('habitacion/:id')
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async deleteHabitacion(
+    @Param()
+    id: IdParamDto,
+  ) {
+    return await this.hotelesService.deleteHabitacion(id.id);
   }
 }
