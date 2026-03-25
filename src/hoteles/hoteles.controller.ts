@@ -94,4 +94,13 @@ export class HotelesController {
   ) {
     return await this.hotelesService.deleteHabitacion(id.id);
   }
+
+  @Get('habitacion/:id')
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async getHabitacion(
+    @Param()
+    id: IdParamDto,
+  ) {
+    return await this.hotelesService.getHabitacion(id.id);
+  }
 }

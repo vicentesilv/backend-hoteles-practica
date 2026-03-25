@@ -107,4 +107,12 @@ export class HotelesService {
     }
     await this.habitacionRepository.delete(habitacion.id);
   }
+
+  async getHabitacion(id: number) {
+    const habitacion = await this.habitacionRepository.findOneBy({ id: id });
+    if (!habitacion) {
+      throw new NotFoundException('La habitacion no existe');
+    }
+    return habitacion;
+  }
 }
