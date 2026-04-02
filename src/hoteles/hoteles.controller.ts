@@ -24,14 +24,18 @@ import {
 import {
   CreateHabitacionDto,
   UpdateHabitacionDto,
-} from './dto/habitaciones.dto';
+} from 'src/habitaciones/dto/habitaciones.dto';
 import { Hotel } from './hotel.entity';
+import { HabitacionesService } from 'src/habitaciones/habitaciones.service';
 import { HotelesService } from './hoteles.service';
 import { join } from 'path';
 
 @Controller('hoteles')
 export class HotelesController {
-  constructor(private readonly hotelesService: HotelesService) {}
+  constructor(
+    private readonly hotelesService: HotelesService,
+    private readonly habitacionesService: HabitacionesService,
+  ) {}
 
   @Get(':id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
@@ -135,42 +139,32 @@ export class HotelesController {
     return { Hotel, message: 'Hotel eliminado' };
   }
 
-
-
-
   @Post('habitacion')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async createHabitacion(@Body() request: CreateHabitacionDto) {
-    return await this.hotelesService.createHabitacion(request);
+  async createHabitacionLegacy(@Body() request: CreateHabitacionDto) {
+    return await this.habitacionesService.createHabitacion(request);
   }
 
   @Put('habitacion/:id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async updateHabitacion(
-    @Body()
-    request: UpdateHabitacionDto,
-    @Param()
-    id: IdParamDto,
+  async updateHabitacionLegacy(
+    @Body() request: UpdateHabitacionDto,
+    @Param() id: IdParamDto,
   ) {
-    return await this.hotelesService.updateHabitacion(request, id.id);
+    return await this.habitacionesService.updateHabitacion(request, id.id);
   }
 
   @Delete('habitacion/:id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async deleteHabitacion(
-    @Param()
-    id: IdParamDto,
-  ) {
-    return await this.hotelesService.deleteHabitacion(id.id);
+  async deleteHabitacionLegacy(@Param() id: IdParamDto) {
+    return await this.habitacionesService.deleteHabitacion(id.id);
   }
+
   @Get(':id/habitacion')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async getAllHabitacion(
-    @Param()
-    hotelId: IdParamDto,
-  ) {
-    const rooms = await this.hotelesService.getAllHabitaciones(hotelId.id);
-    if (rooms.length == 0) {
+  async getAllHabitacionLegacy(@Param() hotelId: IdParamDto) {
+    const rooms = await this.habitacionesService.getAllHabitaciones(hotelId.id);
+    if (rooms.length === 0) {
       throw new NotFoundException('No existen habitaciones');
     }
     return rooms;
@@ -178,12 +172,10 @@ export class HotelesController {
 
   @Get(':hotelId/habitacion/:id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async getHabitacion(
-    @Param('id', ParseIntPipe)
-    id: number,
-    @Param('hotelId', ParseIntPipe)
-    hotelId: number,
+  async getHabitacionLegacy(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('hotelId', ParseIntPipe) hotelId: number,
   ) {
-    return await this.hotelesService.getHabitacion(id, hotelId);
+    return await this.habitacionesService.getHabitacion(id, hotelId);
   }
 }

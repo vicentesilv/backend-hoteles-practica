@@ -1,6 +1,6 @@
 import { User } from "src/user/user.entity";
 import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Habitacion } from "./habitaciones.entity";
+import { Habitacion } from "src/habitaciones/habitaciones.entity";
 
 @Entity()
 export class Reserva{

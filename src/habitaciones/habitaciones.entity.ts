@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Hotel } from './hotel.entity';
+import { Hotel } from 'src/hoteles/hotel.entity';
 
 export enum TipoHabitacion {
   INDIVIDUAL = 'individual',
