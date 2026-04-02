@@ -107,4 +107,28 @@ export class HotelesService {
     }
     await this.habitacionRepository.delete(habitacion.id);
   }
+
+  async getHabitacion(id: number, hotelId: number) {
+    const habitacion = await this.habitacionRepository.findOne({
+      where: {
+        id: id,
+        idHotel: { id: hotelId },
+      },
+    });
+    if (!habitacion) {
+      throw new NotFoundException('La habitacion no existe');
+    }
+    return habitacion;
+  }
+
+  async getAllHabitaciones(hotelId: number) {
+    const hotel = await this.hotelRepo.findOne({
+      where: { id: hotelId },
+      relations: { habitaciones: true },
+    });
+    if (!hotel) {
+      throw new NotFoundException('El hotel vinculado no existe');
+    }
+    return hotel.habitaciones;
+  }
 }

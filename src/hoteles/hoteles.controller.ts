@@ -9,6 +9,7 @@ import {
   NotFoundException,
   UsePipes,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   CreateHotelDto,
@@ -93,5 +94,28 @@ export class HotelesController {
     id: IdParamDto,
   ) {
     return await this.hotelesService.deleteHabitacion(id.id);
+  }
+  @Get(':id/habitacion')
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async getAllHabitacion(
+    @Param()
+    hotelId: IdParamDto,
+  ) {
+    const rooms = await this.hotelesService.getAllHabitaciones(hotelId.id);
+    if (rooms.length == 0) {
+      throw new NotFoundException('No existen habitaciones');
+    }
+    return rooms;
+  }
+
+  @Get(':hotelId/habitacion/:id')
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async getHabitacion(
+    @Param('id', ParseIntPipe)
+    id: number,
+    @Param('hotelId', ParseIntPipe)
+    hotelId: number,
+  ) {
+    return await this.hotelesService.getHabitacion(id, hotelId);
   }
 }
