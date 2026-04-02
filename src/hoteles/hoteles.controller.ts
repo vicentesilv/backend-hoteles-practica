@@ -9,6 +9,7 @@ import {
   NotFoundException,
   UsePipes,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   CreateHotelDto,
@@ -110,11 +111,11 @@ export class HotelesController {
   @Get(':hotelId/habitacion/:id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async getHabitacion(
-    @Param()
-    id: IdParamDto,
-    @Param()
-    hotelId: IdParamDto,
+    @Param('id', ParseIntPipe)
+    id: number,
+    @Param('hotelId', ParseIntPipe)
+    hotelId: number,
   ) {
-    return await this.hotelesService.getHabitacion(id.id, hotelId.id);
+    return await this.hotelesService.getHabitacion(id, hotelId);
   }
 }
