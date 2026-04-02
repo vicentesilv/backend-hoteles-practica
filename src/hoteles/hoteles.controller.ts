@@ -14,7 +14,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { existsSync, join, unlinkSync } from 'fs';
+import { existsSync, unlinkSync } from 'fs';
 import { getHotelImageUploadOptions } from 'src/config/images';
 import {
   CreateHotelDto,
@@ -27,6 +27,7 @@ import {
 } from './dto/habitaciones.dto';
 import { Hotel } from './hotel.entity';
 import { HotelesService } from './hoteles.service';
+import { join } from 'path';
 
 @Controller('hoteles')
 export class HotelesController {
