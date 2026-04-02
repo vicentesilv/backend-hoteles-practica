@@ -1,5 +1,12 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Hotel } from "./hotel.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Hotel } from './hotel.entity';
 
 export enum TipoHabitacion {
   INDIVIDUAL = 'individual',
@@ -16,13 +23,12 @@ export class Habitacion {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Hotel, (hotel) => hotel.id, {
-    cascade: true,
-  })
-  idhotel: Hotel;
+  @ManyToOne(() => Hotel, (hotel) => hotel.id)
+  @JoinColumn({ name: 'idhotel' })
+  idHotel: Hotel;
 
-  @Column({ type: 'int' })
-  numhabitacion: number;
+  @Column({ type: 'int', name: 'numhabitacion' })
+  numHabitacion: number;
 
   @Column({ type: 'enum', enum: TipoHabitacion })
   tipo: TipoHabitacion;
