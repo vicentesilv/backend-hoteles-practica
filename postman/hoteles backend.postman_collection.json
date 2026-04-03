@@ -1,382 +1,453 @@
 {
-  "info": {
-    "_postman_id": "e881ab21-1f53-4a10-86f5-c09be14068e0",
-    "name": "hoteles backend",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "44132007",
-    "_collection_link": "https://go.postman.co/collection/44132007-e881ab21-1f53-4a10-86f5-c09be14068e0?source=collection_link"
-  },
-  "item": [
-    {
-      "name": "Hoteles",
-      "item": [
-        {
-          "name": "Create Hotel",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const responseData = pm.response.json();",
-                  "if(pm.response.code == 201){",
-                  "    const hotelId = responseData.id;",
-                  "    pm.collectionVariables.set(\"hotelId\",hotelId);",
-                  "}",
-                  "",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"idHotelero\": {{userId}},\n    \"nombre\": \"{{hotelname}}\",\n    \"direccion\": \"{{hoteladdress}}\",\n    \"telefono\": \"{{hotelPhone}}\",\n    \"email\": \"{{hotelEmail}}\",\n    \"foto\": \"{{photo}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseurl}}/hoteles",
-              "host": [
-                "{{baseurl}}"
-              ],
-              "path": [
-                "hoteles"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Hotel",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseurl}}/hoteles/{{hotelId}}",
-              "host": [
-                "{{baseurl}}"
-              ],
-              "path": [
-                "hoteles",
-                "{{hotelId}}"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Habitaciones",
-      "item": [
-        {
-          "name": "Create Habitacion",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const responseData = pm.response.json();",
-                  "if(pm.response.code === 201){",
-                  "    const habitacionId = responseData.id;",
-                  "    pm.collectionVariables.set(\"habitacionId\", habitacionId);",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"idHotel\": {{hotelId}},\n    \"numHabitacion\": {{habitacionNum}},\n    \"tipo\": \"{{habitacionTipo}}\",\n    \"capacidad\": {{habitacionCapacidad}},\n    \"precio\": {{habitacionPrecio}},\n    \"descripcion\": \"{{habitacionDescripcion}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseurl}}/hoteles/habitacion",
-              "host": [
-                "{{baseurl}}"
-              ],
-              "path": [
-                "hoteles",
-                "habitacion"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Habitacion",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseurl}}/hoteles/habitacion/{{habitacionId}}",
-              "host": [
-                "{{baseurl}}"
-              ],
-              "path": [
-                "hoteles",
-                "habitacion",
-                "{{habitacionId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get All Habitacion from hotel",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseurl}}/hoteles/{{hotelId}}/habitacion",
-              "host": [
-                "{{baseurl}}"
-              ],
-              "path": [
-                "hoteles",
-                "{{hotelId}}",
-                "habitacion"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Habitacion from hotel",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseurl}}/hoteles/{{hotelId}}/habitacion/{{habitacionId}}",
-              "host": [
-                "{{baseurl}}"
-              ],
-              "path": [
-                "hoteles",
-                "{{hotelId}}",
-                "habitacion",
-                "{{habitacionId}}"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Users",
-      "item": [
-        {
-          "name": "Create User",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const responseData = pm.response.json();",
-                  "if(pm.response.code == 201){",
-                  "    const userId = responseData.id;",
-                  "    pm.collectionVariables.set(\"userId\", userId)",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"nombre\":\"{{name}}\",\n    \"email\": \"{{email}}\",\n    \"contrasena\": \"{{password}}\",\n    \"fecha_nacimiento\":\"{{birthdate}}\",\n    \"rol\":\"{{role}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseurl}}/user",
-              "host": [
-                "{{baseurl}}"
-              ],
-              "path": [
-                "user"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete User",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseurl}}/user/{{userId}}",
-              "host": [
-                "{{baseurl}}"
-              ],
-              "path": [
-                "user",
-                "{{userId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "New Request",
-          "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": []
-        }
-      ]
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "name",
-      "value": "mario"
-    },
-    {
-      "key": "email",
-      "value": "mario@mario.com"
-    },
-    {
-      "key": "hotelname",
-      "value": "papuhotel"
-    },
-    {
-      "key": "password",
-      "value": "papu1234"
-    },
-    {
-      "key": "birthdate",
-      "value": "2005-07-26"
-    },
-    {
-      "key": "hoteladdress",
-      "value": "Av papulandia #237"
-    },
-    {
-      "key": "hotelPhone",
-      "value": "7777777777"
-    },
-    {
-      "key": "hotelEmail",
-      "value": "papuhotel@hotel.com"
-    },
-    {
-      "key": "photo",
-      "value": "loremipsum"
-    },
-    {
-      "key": "habitacionNum",
-      "value": "123"
-    },
-    {
-      "key": "habitacionTipo",
-      "value": "individual"
-    },
-    {
-      "key": "habitacionCapacidad",
-      "value": "1"
-    },
-    {
-      "key": "habitacionPrecio",
-      "value": "2300"
-    },
-    {
-      "key": "habitacionDescripcion",
-      "value": "loremipsum"
-    },
-    {
-      "key": "habitacionId",
-      "value": ""
-    },
-    {
-      "key": "hotelId",
-      "value": ""
-    },
-    {
-      "key": "role",
-      "value": "hotelero"
-    },
-    {
-      "key": "userId",
-      "value": ""
-    }
-  ]
+	"info": {
+		"_postman_id": "65c0d1e6-f117-4f11-9a64-4d8a968d0854",
+		"name": "hoteles backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39175694"
+	},
+	"item": [
+		{
+			"name": "Hoteles",
+			"item": [
+				{
+					"name": "Create Hotel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.json();",
+									"if(pm.response.code == 201){",
+									"    const hotelId = responseData.id;",
+									"    pm.collectionVariables.set(\"hotelId\",hotelId);",
+									"}",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idHotelero\": {{userId}},\n    \"nombre\": \"{{hotelname}}\",\n    \"direccion\": \"{{hoteladdress}}\",\n    \"telefono\": \"{{hotelPhone}}\",\n    \"email\": \"{{hotelEmail}}\",\n    \"foto\": \"{{photo}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/hoteles",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"hoteles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Hotel",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/hoteles/{{hotelId}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"hoteles",
+								"{{hotelId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Habitaciones",
+			"item": [
+				{
+					"name": "Create Habitacion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.json();",
+									"if(pm.response.code === 201){",
+									"    const habitacionId = responseData.id;",
+									"    pm.collectionVariables.set(\"habitacionId\", habitacionId);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idHotel\": {{hotelId}},\n    \"numHabitacion\": {{habitacionNum}},\n    \"tipo\": \"{{habitacionTipo}}\",\n    \"capacidad\": {{habitacionCapacidad}},\n    \"precio\": {{habitacionPrecio}},\n    \"descripcion\": \"{{habitacionDescripcion}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/hoteles/habitacion",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"hoteles",
+								"habitacion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request Copy",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Habitacion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/hoteles/habitacion/{{habitacionId}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"hoteles",
+								"habitacion",
+								"{{habitacionId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.json();",
+									"if(pm.response.code == 201){",
+									"    const userId = responseData.id;",
+									"    pm.collectionVariables.set(\"userId\", userId)",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\":\"{{name}}\",\n    \"email\": \"{{email}}\",\n    \"contrasena\": \"{{password}}\",\n    \"fecha_nacimiento\":\"{{birthdate}}\",\n    \"rol\":\"{{role}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/user",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/user/1",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "registrarse",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"vicente\",\n    \"email\": \"vicentesilvala2@gmail.com\",\n    \"contrasena\": \"vicente1819\",\n    \"fecha_nacimiento\": \"2005-01-18\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/auth/registrarse",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"auth",
+								"registrarse"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inicio-sesion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"email\": \"vicentesilvala2@gmail.com\",\n   \"contrasena\": \"vicente1819\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/auth/inicio-sesion",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"auth",
+								"inicio-sesion"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reservas",
+			"item": [
+				{
+					"name": "crear reserva",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idusuario\": 10,\n    \"idhabitacion\": 5,\n    \"fechainicio\": \"2026-04-10\",\n    \"fechafin\": \"2026-04-12\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/reservas",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"reservas"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "name",
+			"value": "mario"
+		},
+		{
+			"key": "email",
+			"value": "mario@mario.com"
+		},
+		{
+			"key": "hotelname",
+			"value": "papuhotel"
+		},
+		{
+			"key": "password",
+			"value": "papu1234"
+		},
+		{
+			"key": "birthdate",
+			"value": "2005-07-26"
+		},
+		{
+			"key": "hoteladdress",
+			"value": "Av papulandia #237"
+		},
+		{
+			"key": "hotelPhone",
+			"value": "7777777777"
+		},
+		{
+			"key": "hotelEmail",
+			"value": "papuhotel@hotel.com"
+		},
+		{
+			"key": "photo",
+			"value": "loremipsum"
+		},
+		{
+			"key": "habitacionNum",
+			"value": "123"
+		},
+		{
+			"key": "habitacionTipo",
+			"value": "individual"
+		},
+		{
+			"key": "habitacionCapacidad",
+			"value": "1"
+		},
+		{
+			"key": "habitacionPrecio",
+			"value": "2300"
+		},
+		{
+			"key": "habitacionDescripcion",
+			"value": "loremipsum"
+		},
+		{
+			"key": "habitacionId",
+			"value": ""
+		},
+		{
+			"key": "hotelId",
+			"value": ""
+		},
+		{
+			"key": "role",
+			"value": "hotelero"
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "baseurl",
+			"value": "",
+			"type": "default"
+		}
+	]
 }
