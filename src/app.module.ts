@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { HotelesModule } from './hoteles/hoteles.module';
+import { ReservasModule } from './reservas/reservas.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ormConfig } from './config/ormconfig';
@@ -16,6 +17,7 @@ import { ormConfig } from './config/ormconfig';
     AuthModule,
     UserModule,
     HotelesModule,
+    ReservasModule,
   ],
   controllers: [],
   providers: [],
