@@ -24,6 +24,27 @@ export class ReservasService {
       );
     }
 
+    const reservaSolapada = await this.reservaRepo
+      .createQueryBuilder('reserva')
+      .where('reserva.idhabitacion = :idhabitacion', {
+        idhabitacion: dto.idhabitacion,
+      })
+      .andWhere('reserva.fecha_inicio IS NOT NULL')
+      .andWhere('reserva.fecha_fin IS NOT NULL')
+      .andWhere(':fechainicio <= reserva.fecha_fin', {
+        fechainicio: dto.fechainicio,
+      })
+      .andWhere(':fechafin >= reserva.fecha_inicio', {
+        fechafin: dto.fechafin,
+      })
+      .getOne();
+
+    if (reservaSolapada) {
+      throw new BadRequestException(
+        'La habitacion ya tiene una reserva en ese rango de fechas',
+      );
+    }
+
     const usuario = await this.userRepo.findOne({ where: { id: dto.idusuario } });
     if (!usuario) {
       throw new NotFoundException('El usuario no existe');

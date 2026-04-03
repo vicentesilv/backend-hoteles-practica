@@ -22,11 +22,11 @@ export class Reserva {
   @JoinColumn({ name: 'idhabitacion' })
   idHabitacion: Habitacion;
 
-  @Column({ type: 'date', name: 'fecha_inicio' })
-  fechaInicio: Date;
+  @Column({ type: 'date', name: 'fecha_inicio', nullable: true })
+  fechaInicio: Date | null;
 
-  @Column({ type: 'date', name: 'fecha_fin' })
-  fechaFin: Date;
+  @Column({ type: 'date', name: 'fecha_fin', nullable: true })
+  fechaFin: Date | null;
 
   @CreateDateColumn({ type: 'timestamp', name: 'fecha_registro' })
   fechaRegistro: Date;
