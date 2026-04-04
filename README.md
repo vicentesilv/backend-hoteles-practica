@@ -18,6 +18,7 @@ nota: cuando clonen el repositorio recuerden ejecutar npm install para instalar 
 npm install @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt
 npm install @nestjs/config
 npm install typeorm @netsjs/typeorm mysql2
+npm install stripe
 ```
 
 - @nestjs/jwt: Para manejar la autenticacion basada en JWT.
@@ -29,6 +30,16 @@ npm install typeorm @netsjs/typeorm mysql2
 - typeorm: ORM para interactuar con bases de datos relacionales.
 - @nestjs/typeorm: Integracion de TypeORM con NestJS.
 - mysql2: Cliente MySQL para Node.js, necesario para conectar con bases de datos MySQL.
+- stripe: SDK oficial para procesar pagos al crear reservas.
+
+### variables de entorno para stripe
+
+en el archivo `.env` agrega:
+
+```dotenv
+STRIPE_SECRET_KEY=tu_clave_secreta_de_stripe
+STRIPE_CURRENCY=usd
+```
 
 por parte de las dependencias de momento son todas con el tiempo puede que agreguemos mas dependencias segun las necesidades del proyecto.
 
