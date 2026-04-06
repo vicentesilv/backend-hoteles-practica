@@ -28,6 +28,23 @@ export class Reserva {
   @Column({ type: 'date', name: 'fecha_fin', nullable: true })
   fechaFin: Date | null;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'monto_total' })
+  montoTotal: number;
+
+  @Column({ type: 'varchar', length: 10, default: 'usd' })
+  moneda: string;
+
+  @Column({ type: 'varchar', length: 50, name: 'estado_pago', default: 'pagado' })
+  estadoPago: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    name: 'stripe_payment_intent_id',
+    nullable: true,
+  })
+  stripePaymentIntentId: string | null;
+
   @CreateDateColumn({ type: 'timestamp', name: 'fecha_registro' })
   fechaRegistro: Date;
 }

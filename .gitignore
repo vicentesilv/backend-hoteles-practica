@@ -45,7 +45,7 @@ Thumbs.db
 !.vscode/extensions.json
 
 # # Variables de entorno
-# .env
+.env
 # .env.local
 # .env.development.local
 # .env.test.local

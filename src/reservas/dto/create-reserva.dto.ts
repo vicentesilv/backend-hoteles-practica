@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsInt, Min } from 'class-validator';
+import {
+  IsDate,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class CreateReservaDto {
   @Type(() => Number)
@@ -19,4 +25,8 @@ export class CreateReservaDto {
   @Type(() => Date)
   @IsDate({ message: 'La fechafin debe ser una fecha valida' })
   fechafin: Date;
+
+  @IsString({ message: 'El paymentMethodId debe ser un texto' })
+  @IsNotEmpty({ message: 'El paymentMethodId es obligatorio' })
+  paymentMethodId: string;
 }
