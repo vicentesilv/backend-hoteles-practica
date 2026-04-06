@@ -101,6 +101,7 @@ export class ReservasService {
     }
 
     let paymentIntent: any;
+
     try {
       paymentIntent = await this.stripe.paymentIntents.create({
         amount: montoEnCentavos,
