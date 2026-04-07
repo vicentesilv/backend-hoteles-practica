@@ -1,5 +1,14 @@
-import { Body, Controller, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { CreateReservaDto } from './dto/create-reserva.dto';
+import { IdParamDto } from './dto/id-param.dto';
 import { ReservasService } from './reservas.service';
 
 @Controller('reservas')
@@ -10,5 +19,16 @@ export class ReservasController {
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async createReserva(@Body() dto: CreateReservaDto) {
     return this.reservasService.createReserva(dto);
+  }
+
+  @Get(':id')
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async getReservaById(@Param() params: IdParamDto) {
+    return this.reservasService.getReservaById(params.id);
+  }
+  @Get()
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async getAllReservas() {
+    return this.reservasService.getAllReservas();
   }
 }
