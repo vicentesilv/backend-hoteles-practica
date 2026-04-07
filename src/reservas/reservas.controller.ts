@@ -3,12 +3,14 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateReservaDto } from './dto/create-reserva.dto';
 import { IdParamDto } from './dto/id-param.dto';
+import { UpdateReservaDto } from './dto/update-reserva.dto';
 import { ReservasService } from './reservas.service';
 
 @Controller('reservas')
@@ -30,5 +32,11 @@ export class ReservasController {
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async getAllReservas() {
     return this.reservasService.getAllReservas();
+  }
+
+  @Patch(':id')
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async updateReserva(@Param() params: IdParamDto, @Body() dto: UpdateReservaDto) {
+    return this.reservasService.updateReserva(params.id, dto);
   }
 }

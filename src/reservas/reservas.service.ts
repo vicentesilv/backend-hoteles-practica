@@ -10,6 +10,7 @@ import { Habitacion } from 'src/habitaciones/habitaciones.entity';
 import { Reserva } from './reservas.entity';
 import { User } from 'src/user/user.entity';
 import { CreateReservaDto } from './dto/create-reserva.dto';
+import { UpdateReservaDto } from './dto/update-reserva.dto';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 
@@ -65,8 +66,115 @@ export class ReservasService {
     });
   }
 
+  private convertirAFecha(fecha: Date | string): Date {
+    if (fecha instanceof Date) {
+      if (Number.isNaN(fecha.getTime())) {
+        throw new BadRequestException('Se recibio una fecha invalida');
+      }
+      return fecha;
+    }
+
+    const fechaConvertida = new Date(fecha);
+    if (Number.isNaN(fechaConvertida.getTime())) {
+      throw new BadRequestException('Se recibio una fecha invalida');
+    }
+
+    return fechaConvertida;
+  }
+
+  private calcularCantidadDias(
+    fechaInicio: Date | string,
+    fechaFin: Date | string,
+  ): number {
+    const fechaInicioDate = this.convertirAFecha(fechaInicio);
+    const fechaFinDate = this.convertirAFecha(fechaFin);
+
+    const milisegundosPorDia = 1000 * 60 * 60 * 24;
+    const diferencia = fechaFinDate.getTime() - fechaInicioDate.getTime();
+    return Math.max(1, Math.ceil(diferencia / milisegundosPorDia));
+  }
+
+  async updateReserva(id: number, dto: UpdateReservaDto): Promise<Reserva> {
+    const fechaInicioEditada = this.convertirAFecha(dto.fechainicio);
+    const fechaFinEditada = this.convertirAFecha(dto.fechafin);
+
+    if (fechaInicioEditada > fechaFinEditada) {
+      throw new BadRequestException(
+        'La fechainicio no puede ser mayor que la fechafin',
+      );
+    }
+
+    const reserva = await this.reservaRepo.findOne({
+      where: { id },
+      relations: {
+        idUsuario: true,
+        idHabitacion: true,
+      },
+    });
+
+    if (!reserva) {
+      throw new NotFoundException(`No se encontro una reserva con id ${id}`);
+    }
+
+    if (!reserva.fechaInicio || !reserva.fechaFin) {
+      throw new BadRequestException('La reserva no tiene fechas validas para editar');
+    }
+
+    const diasOriginales = this.calcularCantidadDias(
+      reserva.fechaInicio,
+      reserva.fechaFin,
+    );
+    const diasEditados = this.calcularCantidadDias(dto.fechainicio, dto.fechafin);
+
+    if (diasOriginales !== diasEditados) {
+      throw new BadRequestException(
+        'La cantidad de dias editada debe ser la misma que la reserva original',
+      );
+    }
+
+    const reservaSolapada = await this.reservaRepo
+      .createQueryBuilder('reserva')
+      .where('reserva.idhabitacion = :idhabitacion', {
+        idhabitacion: reserva.idHabitacion.id,
+      })
+      .andWhere('reserva.id != :idreserva', { idreserva: id })
+      .andWhere('reserva.fecha_inicio IS NOT NULL')
+      .andWhere('reserva.fecha_fin IS NOT NULL')
+      .andWhere(':fechainicio <= reserva.fecha_fin', {
+        fechainicio: fechaInicioEditada,
+      })
+      .andWhere(':fechafin >= reserva.fecha_inicio', {
+        fechafin: fechaFinEditada,
+      })
+      .getOne();
+
+    if (reservaSolapada) {
+      throw new BadRequestException(
+        'La habitacion ya tiene una reserva en ese rango de fechas',
+      );
+    }
+
+    reserva.fechaInicio = fechaInicioEditada;
+    reserva.fechaFin = fechaFinEditada;
+
+    try {
+      return await this.reservaRepo.save(reserva);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'No se pudo actualizar la reserva';
+      throw new InternalServerErrorException(
+        `Error al actualizar la reserva: ${message}`,
+      );
+    }
+  }
+
   async createReserva(dto: CreateReservaDto): Promise<Reserva> {
-    if (dto.fechainicio > dto.fechafin) {
+    const fechaInicio = this.convertirAFecha(dto.fechainicio);
+    const fechaFin = this.convertirAFecha(dto.fechafin);
+
+    if (fechaInicio > fechaFin) {
       throw new BadRequestException(
         'La fechainicio no puede ser mayor que la fechafin',
       );
@@ -80,10 +188,10 @@ export class ReservasService {
       .andWhere('reserva.fecha_inicio IS NOT NULL')
       .andWhere('reserva.fecha_fin IS NOT NULL')
       .andWhere(':fechainicio <= reserva.fecha_fin', {
-        fechainicio: dto.fechainicio,
+        fechainicio: fechaInicio,
       })
       .andWhere(':fechafin >= reserva.fecha_inicio', {
-        fechafin: dto.fechafin,
+        fechafin: fechaFin,
       })
       .getOne();
 
@@ -110,9 +218,7 @@ export class ReservasService {
       throw new BadRequestException('La habitacion no tiene un precio valido');
     }
 
-    const milisegundosPorDia = 1000 * 60 * 60 * 24;
-    const diferencia = dto.fechafin.getTime() - dto.fechainicio.getTime();
-    const noches = Math.max(1, Math.ceil(diferencia / milisegundosPorDia));
+    const noches = this.calcularCantidadDias(fechaInicio, fechaFin);
     const montoTotal = Number((precioPorNoche * noches).toFixed(2));
 
     const moneda =
@@ -142,8 +248,8 @@ export class ReservasService {
         metadata: {
           idusuario: String(usuario.id),
           idhabitacion: String(habitacion.id),
-          fechainicio: dto.fechainicio.toISOString(),
-          fechafin: dto.fechafin.toISOString(),
+          fechainicio: fechaInicio.toISOString(),
+          fechafin: fechaFin.toISOString(),
         },
       });
     } catch (error) {
@@ -164,8 +270,8 @@ export class ReservasService {
     const reserva = this.reservaRepo.create({
       idUsuario: usuario,
       idHabitacion: habitacion,
-      fechaInicio: dto.fechainicio,
-      fechaFin: dto.fechafin,
+      fechaInicio,
+      fechaFin,
       montoTotal,
       moneda,
       estadoPago: 'pagado',
