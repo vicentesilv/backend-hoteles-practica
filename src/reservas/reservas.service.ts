@@ -40,6 +40,31 @@ export class ReservasService {
     }
   }
 
+  async getReservaById(id: number): Promise<Reserva> {
+    const reserva = await this.reservaRepo.findOne({
+      where: { id },
+      relations: {
+        idUsuario: true,
+        idHabitacion: true,
+      },
+    });
+
+    if (!reserva) {
+      throw new NotFoundException(`No se encontro una reserva con id ${id}`);
+    }
+
+    return reserva;
+  }
+
+  async getAllReservas(): Promise<Reserva[]> {
+    return this.reservaRepo.find({
+      relations: {
+        idUsuario: true,
+        idHabitacion: true,
+      },
+    });
+  }
+
   async createReserva(dto: CreateReservaDto): Promise<Reserva> {
     if (dto.fechainicio > dto.fechafin) {
       throw new BadRequestException(
