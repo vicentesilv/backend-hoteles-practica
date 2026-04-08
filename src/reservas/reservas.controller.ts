@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -38,5 +39,12 @@ export class ReservasController {
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async updateReserva(@Param() params: IdParamDto, @Body() dto: UpdateReservaDto) {
     return this.reservasService.updateReserva(params.id, dto);
+  }
+
+  @Delete(':id')
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async deleteReserva(@Param() params: IdParamDto): Promise<{ message: string }> {
+    await this.reservasService.deleteReserva(params.id);
+    return { message: 'Reserva eliminada' };
   }
 }

@@ -170,6 +170,16 @@ export class ReservasService {
     }
   }
 
+  async deleteReserva(id: number): Promise<void> {
+    const reserva = await this.reservaRepo.findOne({ where: { id } });
+
+    if (!reserva) {
+      throw new NotFoundException(`No se encontro una reserva con id ${id}`);
+    }
+
+    await this.reservaRepo.delete(id);
+  }
+
   async createReserva(dto: CreateReservaDto): Promise<Reserva> {
     const fechaInicio = this.convertirAFecha(dto.fechainicio);
     const fechaFin = this.convertirAFecha(dto.fechafin);
