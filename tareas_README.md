@@ -3,7 +3,6 @@
 -- JWT tiene fallback inseguro de secreto en auth.module.ts y jwt.strategy.ts.
 E2E hoy falla por alias src/* no resuelto en jest-e2e.json y por imports absolutos en auth.service.ts.
 -- npm run build falla por permisos en dist (EACCES), no por TypeScript.
-Qué agregar primero (top 6)
 
 -- Seguridad de API: aplicar JwtAuthGuard + guard por roles en módulos sensibles (reservas, hoteles, user).
 -- Migraciones TypeORM (migration:generate/run) y desactivar synchronize fuera de dev.
