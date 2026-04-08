@@ -41,6 +41,13 @@ export class ReservasController {
     return this.reservasService.updateReserva(params.id, dto);
   }
 
+  @Patch(':id/cancelar')
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async cancelReserva(@Param() params: IdParamDto): Promise<{ message: string }> {
+    await this.reservasService.cancelReserva(params.id);
+    return { message: 'Reserva cancelada' };
+  }
+
   @Delete(':id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async deleteReserva(@Param() params: IdParamDto): Promise<{ message: string }> {
