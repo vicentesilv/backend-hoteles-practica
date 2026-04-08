@@ -137,6 +137,9 @@ export class ReservasService {
       .where('reserva.idhabitacion = :idhabitacion', {
         idhabitacion: reserva.idHabitacion.id,
       })
+      .andWhere('reserva.estado_pago != :estadoCancelado', {
+        estadoCancelado: 'cancelado',
+      })
       .andWhere('reserva.id != :idreserva', { idreserva: id })
       .andWhere('reserva.fecha_inicio IS NOT NULL')
       .andWhere('reserva.fecha_fin IS NOT NULL')
@@ -170,6 +173,32 @@ export class ReservasService {
     }
   }
 
+  async deleteReserva(id: number): Promise<void> {
+    const reserva = await this.reservaRepo.findOne({ where: { id } });
+
+    if (!reserva) {
+      throw new NotFoundException(`No se encontro una reserva con id ${id}`);
+    }
+
+    await this.reservaRepo.delete(id);
+  }
+
+  async cancelReserva(id: number): Promise<Reserva> {
+    const reserva = await this.reservaRepo.findOne({ where: { id } });
+
+    if (!reserva) {
+      throw new NotFoundException(`No se encontro una reserva con id ${id}`);
+    }
+
+    if (reserva.estadoPago?.toLowerCase() === 'cancelado') {
+      throw new BadRequestException('La reserva ya se encuentra cancelada');
+    }
+
+    reserva.estadoPago = 'cancelado';
+
+    return this.reservaRepo.save(reserva);
+  }
+
   async createReserva(dto: CreateReservaDto): Promise<Reserva> {
     const fechaInicio = this.convertirAFecha(dto.fechainicio);
     const fechaFin = this.convertirAFecha(dto.fechafin);
@@ -184,6 +213,9 @@ export class ReservasService {
       .createQueryBuilder('reserva')
       .where('reserva.idhabitacion = :idhabitacion', {
         idhabitacion: dto.idhabitacion,
+      })
+      .andWhere('reserva.estado_pago != :estadoCancelado', {
+        estadoCancelado: 'cancelado',
       })
       .andWhere('reserva.fecha_inicio IS NOT NULL')
       .andWhere('reserva.fecha_fin IS NOT NULL')
