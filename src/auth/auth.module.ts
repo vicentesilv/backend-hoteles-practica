@@ -15,10 +15,18 @@ import { JwtStrategy } from './jwt.strategy';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'tu_secreto_super_seguro_cambialo',
-        signOptions: { expiresIn: '24h' },
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const jwtSecret = configService.get<string>('JWT_SECRET');
+
+        if (!jwtSecret) {
+          throw new Error('Falta la variable de entorno JWT_SECRET');
+        }
+
+        return {
+          secret: jwtSecret,
+          signOptions: { expiresIn: '24h' },
+        };
+      },
     }),
   ],
   providers: [AuthService, JwtStrategy],

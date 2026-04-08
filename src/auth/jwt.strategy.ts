@@ -13,10 +13,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     @InjectRepository(User)
     private usersRepository: Repository<User>
   ) {
+    const jwtSecret = configService.get<string>('JWT_SECRET');
+
+    if (!jwtSecret) {
+      throw new Error('Falta la variable de entorno JWT_SECRET');
+    }
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET') || 'tu_secreto_super_seguro_cambialo',
+      secretOrKey: jwtSecret,
     });
   }
 
