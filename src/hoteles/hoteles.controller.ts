@@ -1,34 +1,17 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  NotFoundException,
-  Param,
-  ParseIntPipe,
-  Post,
-  Put,
-  UploadedFile,
-  UseInterceptors,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body,Controller,Delete,Get,NotFoundException,Param,ParseIntPipe,Post,Put,UploadedFile,UseGuards,UseInterceptors,UsePipes,ValidationPipe} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { existsSync, unlinkSync } from 'fs';
 import { getHotelImageUploadOptions } from 'src/config/images';
-import {
-  CreateHotelDto,
-  IdParamDto,
-  UpdateHotelDto,
-} from './dto/create-hotel.dto';
-import {
-  CreateHabitacionDto,
-  UpdateHabitacionDto,
-} from 'src/habitaciones/dto/habitaciones.dto';
+import { CreateHotelDto,IdParamDto,UpdateHotelDto} from './dto/create-hotel.dto';
+import { CreateHabitacionDto,UpdateHabitacionDto} from 'src/habitaciones/dto/habitaciones.dto';
 import { Hotel } from './hotel.entity';
 import { HabitacionesService } from 'src/habitaciones/habitaciones.service';
 import { HotelesService } from './hoteles.service';
 import { join } from 'path';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { UserRol } from 'src/user/user.entity';
 
 @Controller('hoteles')
 export class HotelesController {
@@ -51,6 +34,8 @@ export class HotelesController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRol.HOTELERO)
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   @UseInterceptors(FileInterceptor('foto', getHotelImageUploadOptions()))
   async createHotel(
@@ -75,6 +60,8 @@ export class HotelesController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRol.HOTELERO)
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   @UseInterceptors(FileInterceptor('foto', getHotelImageUploadOptions()))
   async updateHotel(
@@ -118,6 +105,8 @@ export class HotelesController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRol.HOTELERO)
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async deleteHotel(
     @Param() params: IdParamDto,
@@ -140,12 +129,16 @@ export class HotelesController {
   }
 
   @Post('habitacion')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRol.HOTELERO)
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async createHabitacionLegacy(@Body() request: CreateHabitacionDto) {
     return await this.habitacionesService.createHabitacion(request);
   }
 
   @Put('habitacion/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRol.HOTELERO)
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async updateHabitacionLegacy(
     @Body() request: UpdateHabitacionDto,
@@ -155,6 +148,8 @@ export class HotelesController {
   }
 
   @Delete('habitacion/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRol.HOTELERO)
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async deleteHabitacionLegacy(@Param() id: IdParamDto) {
     return await this.habitacionesService.deleteHabitacion(id.id);

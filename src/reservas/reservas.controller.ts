@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -13,8 +14,13 @@ import { CreateReservaDto } from './dto/create-reserva.dto';
 import { IdParamDto } from './dto/id-param.dto';
 import { UpdateReservaDto } from './dto/update-reserva.dto';
 import { ReservasService } from './reservas.service';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { UserRol } from 'src/user/user.entity';
 
 @Controller('reservas')
+@UseGuards(JwtAuthGuard)
 export class ReservasController {
   constructor(private readonly reservasService: ReservasService) {}
 
@@ -49,6 +55,8 @@ export class ReservasController {
   }
 
   @Delete(':id')
+  @UseGuards(RolesGuard)
+  @Roles(UserRol.HOTELERO)
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async deleteReserva(@Param() params: IdParamDto): Promise<{ message: string }> {
     await this.reservasService.deleteReserva(params.id);
