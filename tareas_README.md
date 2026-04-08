@@ -8,9 +8,9 @@ E2E hoy falla por alias src/* no resuelto en jest-e2e.json y por imports absolut
 -- Migraciones TypeORM (migration:generate/run) y desactivar synchronize fuera de dev.
 Swagger/OpenAPI en main.ts para documentar y probar endpoints.
 -- Rate limiting en auth (/inicio-sesion, /forgot-password) para mitigar brute force.
-Manejo global de errores y logging estructurado (interceptor + exception filter).
+-- Manejo global de errores y logging estructurado (interceptor + exception filter).
 Suite de pruebas real: unit tests de servicios + e2e de auth/reservas (corrigiendo jest-e2e.json).
 -- Mejoras de producto que suman mucho
 
 Política de cancelación: ventana de cancelación y posible reembolso Stripe en reservas.service.ts.
-Notificaciones por correo al crear/cancelar reserva (ya tienes base en auth mailer).
+-- Notificaciones por correo al crear/cancelar reserva (ya tienes base en auth mailer).

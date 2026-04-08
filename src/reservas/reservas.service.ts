@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,10 +14,13 @@ import { CreateReservaDto } from './dto/create-reserva.dto';
 import { UpdateReservaDto } from './dto/update-reserva.dto';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
+import { confignodeemail } from 'src/config/nodeemail';
 
 @Injectable()
 export class ReservasService {
   private readonly stripe: any | null;
+  private readonly logger = new Logger(ReservasService.name);
+  private readonly emailService: confignodeemail;
 
   constructor(
     @InjectRepository(Reserva)
@@ -27,6 +31,8 @@ export class ReservasService {
     private readonly habitacionRepo: Repository<Habitacion>,
     private readonly configService: ConfigService,
   ) {
+    this.emailService = new confignodeemail();
+
     const stripeSecretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
 
     if (!stripeSecretKey) {
@@ -38,6 +44,70 @@ export class ReservasService {
       this.stripe = new (Stripe as any)(stripeSecretKey);
     } catch {
       this.stripe = (Stripe as any)(stripeSecretKey);
+    }
+  }
+
+  private formatearFecha(fecha: Date | null): string {
+    if (!fecha) {
+      return 'N/A';
+    }
+
+    return new Date(fecha).toISOString().split('T')[0];
+  }
+
+  private async enviarCorreoReservaCreada(reserva: Reserva): Promise<void> {
+    try {
+      await this.emailService.sendMail({
+        from: process.env.mail,
+        to: reserva.idUsuario.email,
+        subject: 'Confirmación de reserva',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #333;">¡Reserva confirmada!</h2>
+            <p>Hola ${reserva.idUsuario.nombre},</p>
+            <p>Tu reserva ha sido creada exitosamente.</p>
+            <ul>
+              <li><strong>ID de reserva:</strong> ${reserva.id}</li>
+              <li><strong>Habitación:</strong> ${reserva.idHabitacion.numHabitacion}</li>
+              <li><strong>Fecha inicio:</strong> ${this.formatearFecha(reserva.fechaInicio)}</li>
+              <li><strong>Fecha fin:</strong> ${this.formatearFecha(reserva.fechaFin)}</li>
+              <li><strong>Monto total:</strong> ${reserva.montoTotal} ${reserva.moneda?.toUpperCase()}</li>
+              <li><strong>Estado de pago:</strong> ${reserva.estadoPago}</li>
+            </ul>
+          </div>
+        `,
+      });
+    } catch (error) {
+      this.logger.warn(
+        `No se pudo enviar correo de confirmación para la reserva ${reserva.id}`,
+      );
+    }
+  }
+
+  private async enviarCorreoReservaCancelada(reserva: Reserva): Promise<void> {
+    try {
+      await this.emailService.sendMail({
+        from: process.env.mail,
+        to: reserva.idUsuario.email,
+        subject: 'Reserva cancelada',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #333;">Reserva cancelada</h2>
+            <p>Hola ${reserva.idUsuario.nombre},</p>
+            <p>Tu reserva ha sido cancelada correctamente.</p>
+            <ul>
+              <li><strong>ID de reserva:</strong> ${reserva.id}</li>
+              <li><strong>Habitación:</strong> ${reserva.idHabitacion.numHabitacion}</li>
+              <li><strong>Fecha inicio:</strong> ${this.formatearFecha(reserva.fechaInicio)}</li>
+              <li><strong>Fecha fin:</strong> ${this.formatearFecha(reserva.fechaFin)}</li>
+            </ul>
+          </div>
+        `,
+      });
+    } catch (error) {
+      this.logger.warn(
+        `No se pudo enviar correo de cancelación para la reserva ${reserva.id}`,
+      );
     }
   }
 
@@ -184,7 +254,13 @@ export class ReservasService {
   }
 
   async cancelReserva(id: number): Promise<Reserva> {
-    const reserva = await this.reservaRepo.findOne({ where: { id } });
+    const reserva = await this.reservaRepo.findOne({
+      where: { id },
+      relations: {
+        idUsuario: true,
+        idHabitacion: true,
+      },
+    });
 
     if (!reserva) {
       throw new NotFoundException(`No se encontro una reserva con id ${id}`);
@@ -195,8 +271,10 @@ export class ReservasService {
     }
 
     reserva.estadoPago = 'cancelado';
+    const reservaCancelada = await this.reservaRepo.save(reserva);
+    await this.enviarCorreoReservaCancelada(reservaCancelada);
 
-    return this.reservaRepo.save(reserva);
+    return reservaCancelada;
   }
 
   async createReserva(dto: CreateReservaDto): Promise<Reserva> {
@@ -311,7 +389,10 @@ export class ReservasService {
     });
 
     try {
-      return await this.reservaRepo.save(reserva);
+      const reservaGuardada = await this.reservaRepo.save(reserva);
+      await this.enviarCorreoReservaCreada(reservaGuardada);
+
+      return reservaGuardada;
     } catch (error) {
       const message =
         error instanceof Error
